@@ -1,4 +1,4 @@
-import { base32 } from "./encoding";
+import { base32 } from "./base32";
 import { HMAC, constantTimeEqual } from "./utils";
 
 export const HOTP = {

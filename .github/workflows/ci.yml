@@ -1,0 +1,56 @@
+# Main integration workflow to build the web app, run tests, and deploy the artifact
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      #
+      # Setup -----------------------------------------------------------------
+      #
+
+      # Checkout code - https://github.com/actions/checkout
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Install bun using the official action - https://github.com/oven-sh/setup-bun
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
+
+
+      # Install dependencies. Omitting cache per -
+      # https://github.com/oven-sh/setup-bun/issues/14#issuecomment-1714116221
+      - name: Install dependencies - bun
+        run: bun install --silent --frozen-lockfile
+
+      #
+      # Lint -----------------------------------------------------------------
+      #
+
+      - name: Lint
+        run: bun run lint:ci
+
+      #
+      # Build -----------------------------------------------------------------
+      #
+
+      - name: Build the web app
+        run: bun run build
+
+      #
+      # Unit tests ------------------------------------------------------------
+      #
+
+      - name: Run tests
+        run: bun run test

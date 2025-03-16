@@ -1,8 +1,8 @@
 // @cspell:disable
-import { describe, expect, setSystemTime, test } from "bun:test";
-import { fc } from "fast-check-bun-test";
+import { describe, expect, setSystemTime } from "bun:test";
+import { fc, test } from "fast-check-bun-test";
 
-import { base32 } from "./encoding";
+import { base32 } from "./base32";
 import { TOTP } from "./totp";
 
 describe("TOTP Generation and Verification", () => {

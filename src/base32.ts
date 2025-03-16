@@ -6,28 +6,6 @@ export const base32 = {
 	toBuffer: base32ToBuffer,
 } as const;
 
-/**
- * Converts a key to a BufferSource
- * @param key - The key as string, ArrayBuffer, or Uint8Array
- * @returns The key as a BufferSource
- */
-export function keyToBuffer(
-	key: string | ArrayBuffer | Uint8Array,
-): BufferSource {
-	if (typeof key === "string") {
-		return new TextEncoder().encode(key);
-	}
-	if (key instanceof Uint8Array) {
-		return key;
-	}
-	if (key instanceof ArrayBuffer) {
-		return new Uint8Array(key);
-	}
-	throw new Error(
-		"Invalid key type: must be string, ArrayBuffer, or Uint8Array",
-	);
-}
-
 // Base32 character set (RFC4648)
 const BASE32_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 const BASE32_CHAR_MAP = new Map<string, number>();
