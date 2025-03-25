@@ -1,4 +1,4 @@
-import { constantTimeEqual } from "../utils/equal";
+import { constantTimeEqual } from "@/utils/equal";
 import { base32 } from "./base32";
 
 export const HOTP = {

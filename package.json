@@ -14,6 +14,16 @@
 			"types": "./dist/otp/mod.d.ts",
 			"import": "./dist/otp/mod.js",
 			"require": "./dist/otp/mod.cjs"
+		},
+		"./jwt": {
+			"types": "./dist/jwt/mod.d.ts",
+			"import": "./dist/jwt/mod.js",
+			"require": "./dist/jwt/mod.cjs"
+		},
+		"./cbor": {
+			"types": "./dist/cbor/mod.d.ts",
+			"import": "./dist/cbor/mod.js",
+			"require": "./dist/cbor/mod.cjs"
 		}
 	},
 	"scripts": {

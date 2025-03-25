@@ -2,6 +2,16 @@
 
 A TypeScript implementation of various auth related utilities.
 
+## Javascript Object Signing and Encryption (JOSE)
+
+### JSON Web Token (JWT, RFC 7519)
+
+### JSON Web Encryption (JWE, RFC7516)
+
+### JSON Web Signature (JWS, RFC7515)
+
+### JSON Web Key (JWK, RFC7517)
+
 ## One Time Password
 
 ### HMAC-Based One-Time Password Algorithm (HOTP, RFC 4226)
@@ -53,7 +63,7 @@ const TOTP = {
 }
 ```
 
-## Encoding
+## Encoding / Serialization
 
 ### Concise Binary Object Representation (CBOR, RFC8949)
 

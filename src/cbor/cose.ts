@@ -1,4 +1,4 @@
-import { base64Url } from "../utils/encoding";
+import { base64Url } from "@/utils/encoding";
 import type { CBORValue } from "./cbor";
 import { CBOR } from "./cbor";
 
