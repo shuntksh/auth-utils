@@ -10,27 +10,6 @@ export type CBORValue =
 	| undefined;
 
 /**
- * Concatenates an array of ArrayBuffers into a single ArrayBuffer
- * @param buffers - Array of ArrayBuffers to concatenate
- * @returns Concatenated ArrayBuffer
- */
-function concatenateBuffers(
-	buffers: ArrayBuffer[] | Uint8Array[],
-): ArrayBuffer {
-	const totalLength = buffers.reduce(
-		(sum, buffer) => sum + buffer.byteLength,
-		0,
-	);
-	const result = new Uint8Array(totalLength);
-	let offset = 0;
-	for (const buffer of buffers) {
-		result.set(new Uint8Array(buffer), offset);
-		offset += buffer.byteLength;
-	}
-	return result.buffer;
-}
-
-/**
  * RFC 8949: Concise Binary Object Representation (CBOR)
  */
 export const CBOR = {
@@ -122,7 +101,9 @@ function decodeMapToMap<K extends string | number, V extends CBORValue>(
 	return [map, newOffset - startOffset];
 }
 
+//
 // --- Decoding Helpers ---
+//
 
 function decodeFirstItem(
 	buffer: ArrayBuffer,
@@ -349,7 +330,9 @@ function ensureBytes(dataView: DataView, offset: number, length: number): void {
 	}
 }
 
+//
 // --- Encoding Helpers ---
+//
 
 function encodeValue(value: CBORValue, buffers: Uint8Array[]): void {
 	if (typeof value === "number") {
@@ -531,4 +514,25 @@ function encodeNull(buffers: Uint8Array[]): void {
 
 function encodeUndefined(buffers: Uint8Array[]): void {
 	buffers.push(new Uint8Array([0xf7]));
+}
+
+/**
+ * Concatenates an array of ArrayBuffers into a single ArrayBuffer
+ * @param buffers - Array of ArrayBuffers to concatenate
+ * @returns Concatenated ArrayBuffer
+ */
+function concatenateBuffers(
+	buffers: ArrayBuffer[] | Uint8Array[],
+): ArrayBuffer {
+	const totalLength = buffers.reduce(
+		(sum, buffer) => sum + buffer.byteLength,
+		0,
+	);
+	const result = new Uint8Array(totalLength);
+	let offset = 0;
+	for (const buffer of buffers) {
+		result.set(new Uint8Array(buffer), offset);
+		offset += buffer.byteLength;
+	}
+	return result.buffer;
 }

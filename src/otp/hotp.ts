@@ -1,9 +1,32 @@
+import { constantTimeEqual } from "../utils/equal";
 import { base32 } from "./base32";
-import { HMAC, constantTimeEqual } from "./utils";
 
 export const HOTP = {
 	generate: generateHOTP,
 	verify: verifyHOTP,
+} as const;
+
+/**
+ * Generates an HMAC-SHA-1 digest using WebCrypto API
+ * @param options - Options object containing:
+ *   - key: The key as an ArrayBuffer
+ *   - message: The message as an ArrayBuffer
+ * @returns Promise resolving to the HMAC digest
+ */
+const sha1 = async (options: {
+	key: BufferSource;
+	message: BufferSource;
+}): Promise<ArrayBuffer> => {
+	const { key, message } = options;
+	const cryptoKey = await crypto.subtle.importKey(
+		"raw",
+		key,
+		{ name: "HMAC", hash: { name: "SHA-1" } },
+		false,
+		["sign"],
+	);
+
+	return crypto.subtle.sign("HMAC", cryptoKey, message);
 };
 
 /**
@@ -56,7 +79,7 @@ async function generateHOTP(options: {
 		counterView.setUint32(4, low);
 
 		// Generate HMAC-SHA-1
-		const hmacResult = await HMAC.sha1({
+		const hmacResult = await sha1({
 			key: keyBuffer,
 			message: counterBuffer,
 		});

@@ -3,7 +3,7 @@ import { HOTP } from "./hotp";
 export const TOTP = {
 	generate: generateTOTP,
 	verify: verifyTOTP,
-};
+} as const;
 
 /**
  * Generates a TOTP code according to RFC6238
