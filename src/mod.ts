@@ -1,2 +1,1 @@
-export { HOTP } from "./hotp";
-export { TOTP } from "./totp";
+export * from "./otp/mod";

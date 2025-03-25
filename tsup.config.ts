@@ -1,10 +1,10 @@
-import { defineConfig } from 'tsup';
+import { defineConfig } from "tsup";
 
 export default defineConfig({
-  entry: ['./src/mod.ts'],
-  format: ['esm', "cjs"],
-  dts: true,
-  clean: true,
-  outDir: 'dist',
-  noExternal: [],
-}); 
+	entry: ["./src/mod.ts", "./src/otp/mod.ts"],
+	format: ["esm", "cjs"],
+	dts: true,
+	clean: true,
+	outDir: "dist",
+	noExternal: [],
+});
