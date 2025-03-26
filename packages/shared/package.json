@@ -4,9 +4,7 @@
 	"type": "module",
 	"version": "0.1.2",
 	"license": "MIT",
-	"workspaces": [
-		"packages/*"
-	],
+	"workspaces": ["packages/*"],
 	"private": true,
 	"exports": {
 		"./encoding": "./src/encoding.ts",

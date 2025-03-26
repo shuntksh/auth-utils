@@ -5,15 +5,16 @@
 	"version": "0.1.2",
 	"license": "MIT",
 	"workspaces": [
+		"website",
 		"packages/*"
 	],
 	"scripts": {
 		"build": "tsup",
 		"test": "bun test",
 		"test:watch": "bun test --watch",
-		"format": "biome check --write --unsafe src",
-		"lint": "biome check src",
-		"lint:ci": "biome ci src"
+		"format": "biome check --write --unsafe packages",
+		"lint": "biome check packages",
+		"lint:ci": "biome ci packages"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4"
