@@ -8,7 +8,6 @@ import type { CBORValue } from "./types";
 export const CBOR = {
 	encode,
 	decode,
-	decodeMapToMap,
 } as const;
 
 const MAX_BUFFER_SIZE = 16 * 1024 * 1024;
@@ -31,47 +30,6 @@ function decode(buffer: ArrayBuffer, startOffset = 0): CBORValue {
 	}
 	const [value] = decodeValue(buffer, startOffset);
 	return value;
-}
-
-/**
- * Decodes a CBOR map directly into a JavaScript Map with specified key/value types.
- * Tailored for WebAuthn COSE keys (numeric keys, number/ArrayBuffer values).
- *
- * @param buffer - The buffer to decode.
- * @param startOffset - The offset to start decoding from.
- * @param keyValidator - The validator for the keys.
- * @param valueValidator - The validator for the values.
- * @returns The decoded map.
- */
-function decodeMapToMap<K extends string | number, V extends CBORValue>(
-	buffer: ArrayBuffer,
-	startOffset = 0,
-	keyValidator: (key: string | number) => key is K = (key): key is K => true,
-	valueValidator: (value: CBORValue) => value is V = (value): value is V =>
-		true,
-): [Map<K, V>, number] {
-	const [obj, newOffset] = decodeValue(buffer, startOffset);
-	if (
-		typeof obj !== "object" ||
-		obj === null ||
-		"tag" in obj ||
-		Array.isArray(obj)
-	) {
-		throw new Error("Expected CBOR map");
-	}
-	const map = new Map<K, V>();
-	for (const [key, value] of Object.entries(obj)) {
-		const parsedKey =
-			Number(key) === Number.parseInt(key, 10) ? Number(key) : key;
-		if (!keyValidator(parsedKey)) {
-			throw new Error(`Invalid map key: ${parsedKey}`);
-		}
-		if (!valueValidator(value)) {
-			throw new Error(`Invalid map value for key ${parsedKey}: ${value}`);
-		}
-		map.set(parsedKey as K, value as V);
-	}
-	return [map, newOffset - startOffset];
 }
 
 /**

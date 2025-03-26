@@ -1,3 +1,10 @@
+export type { COSEEncrypt } from "./cose-encrypt";
+export type { COSEEncrypt0 } from "./cose-encrypt0";
+export type { COSEMac } from "./cose-mac";
+export type { COSEMac0 } from "./cose-mac0";
+export type { COSESign } from "./cose-sign";
+export type { COSESign1 } from "./cose-sign1";
+
 export const CBOR_MAJOR_TYPES = {
 	UNSIGNED_INTEGER: 0, // 0..2^64-1 inclusive
 	NEGATIVE_INTEGER: 1,
@@ -32,66 +39,48 @@ export type CBORValue =
 	| null
 	| undefined;
 
-// COSE_Key Structure (RFC 8152 §7)
-export interface COSEKey {
-	1: number; // kty (e.g., 2 = EC2, 3 = RSA)
-	3: number; // alg (COSEAlgorithm)
-	[-1]?: number | ArrayBuffer; // crv (EC) or n (RSA modulus)
-	[-2]?: ArrayBuffer; // x (EC) or e (RSA exponent)
-	[-3]?: ArrayBuffer; // y (EC)
+export enum COSEHeader {
+	alg = 1,
+	crit = 2,
+	ctyp = 3,
+	kid = 4,
+	iv = 5,
+	partial_iv = 6,
+	counter_signature = 7,
+	salt = 8,
+	counter_signature0 = 9,
+	x5chain = 33,
+	x5t = 34,
+}
+
+export enum COSEAlgorithm {
+	AES_CCM_16_128_128 = 30,
+	AES_CCM_16_128_256 = 31,
+	AES_CCM_16_64_128 = 10,
+	AES_CCM_16_64_256 = 12,
+	AES_CCM_64_128_128 = 32,
+	AES_CCM_64_128_256 = 33,
+	AES_CCM_64_64_128 = 13,
+	AES_CCM_64_64_256 = 14,
+	AES_GCM_128 = 1,
+	AES_GCM_192 = 2,
+	AES_GCM_256 = 3,
+	CHACHA20_POLY1305 = 24,
+	direct = -6,
+	EDDSA = -8,
+	ES256 = -7,
+	ES384 = -35,
+	ES512 = -36,
+	HMAC_256_256 = 5,
+	HMAC_256_64 = 4,
+	HMAC_384_384 = 6,
+	HMAC_512_512 = 7,
+	PS256 = -37,
+	PS384 = -38,
+	PS512 = -39,
+	RS256 = -257,
+	RS384 = -258,
+	RS512 = -259,
 }
 
 export type HeaderMap = Record<number, CBORValue>;
-
-export interface COSESign1 {
-	protected: HeaderMap;
-	unprotected: HeaderMap;
-	payload: ArrayBuffer | null;
-	signature: ArrayBuffer;
-}
-
-export interface COSESign {
-	protected: HeaderMap;
-	unprotected: HeaderMap;
-	payload: ArrayBuffer | null;
-	signatures: Array<{
-		protected: HeaderMap;
-		unprotected: HeaderMap;
-		signature: ArrayBuffer;
-	}>;
-}
-
-export interface COSEMac0 {
-	protected: HeaderMap;
-	unprotected: HeaderMap;
-	payload: ArrayBuffer | null;
-	tag: ArrayBuffer;
-}
-
-export interface COSEMac {
-	protected: HeaderMap;
-	unprotected: HeaderMap;
-	payload: ArrayBuffer | null;
-	recipients: Array<{
-		protected: HeaderMap;
-		unprotected: HeaderMap;
-		tag: ArrayBuffer;
-	}>;
-}
-
-export interface COSEEncrypt0 {
-	protected: HeaderMap;
-	unprotected: HeaderMap;
-	ciphertext: ArrayBuffer;
-}
-
-export interface COSEEncrypt {
-	protected: HeaderMap;
-	unprotected: HeaderMap;
-	ciphertext: ArrayBuffer;
-	recipients: Array<{
-		protected: HeaderMap;
-		unprotected: HeaderMap;
-		encrypted_key: ArrayBuffer;
-	}>;
-}

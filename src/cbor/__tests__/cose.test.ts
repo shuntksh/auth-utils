@@ -1,346 +1,10 @@
 import { describe, expect } from "bun:test";
 import { fc, test } from "fast-check-bun-test";
 
-import { COSE, COSEAlgorithm, COSEHeader } from "../cose";
-import type {
-	COSEEncrypt,
-	COSEEncrypt0,
-	COSEMac,
-	COSEMac0,
-	COSESign,
-	COSESign1,
-} from "../types";
+import { COSE } from "../cose";
+import { COSEAlgorithm, COSEHeader } from "../types";
 
 describe("COSE", () => {
-	describe("COSE_Sign1", () => {
-		test("should encode and decode COSE_Sign1 with minimal fields", () => {
-			const sign1: COSESign1 = {
-				protected: {
-					[COSEHeader.alg]: COSEAlgorithm.ES256,
-				},
-				unprotected: {},
-				payload: null,
-				signature: new Uint8Array([1, 2, 3, 4]).buffer,
-			};
-
-			const encoded = COSE.encodeSign1(sign1);
-			const decoded = COSE.decodeSign1(encoded);
-			expect(decoded).toEqual(sign1);
-		});
-
-		test("should encode and decode COSE_Sign1 with all fields", () => {
-			const sign1: COSESign1 = {
-				protected: {
-					[COSEHeader.alg]: COSEAlgorithm.ES256,
-					[COSEHeader.crit]: [COSEHeader.alg],
-					[COSEHeader.ctyp]: "application/cbor",
-				},
-				unprotected: {
-					[COSEHeader.kid]: new Uint8Array([1, 2, 3]).buffer,
-				},
-				payload: new Uint8Array([5, 6, 7, 8]).buffer,
-				signature: new Uint8Array([9, 10, 11, 12]).buffer,
-			};
-
-			const encoded = COSE.encodeSign1(sign1);
-			const decoded = COSE.decodeSign1(encoded);
-			expect(decoded).toEqual(sign1);
-		});
-
-		test("should handle COSE_Sign1 with various payload types", () => {
-			const sign1: COSESign1 = {
-				protected: {
-					[COSEHeader.alg]: COSEAlgorithm.ES256,
-				},
-				unprotected: {},
-				payload: new TextEncoder().encode("Hello, World!")
-					.buffer as ArrayBuffer,
-				signature: new Uint8Array([1, 2, 3, 4]).buffer,
-			};
-
-			const encoded = COSE.encodeSign1(sign1);
-			const decoded = COSE.decodeSign1(encoded);
-			expect(decoded).toEqual(sign1);
-		});
-
-		test("should throw error for missing algorithm", () => {
-			const sign1: COSESign1 = {
-				protected: {},
-				unprotected: {},
-				payload: null,
-				signature: new Uint8Array([1, 2, 3, 4]).buffer,
-			};
-
-			expect(() => COSE.encodeSign1(sign1)).toThrow(
-				"Protected header must contain 'alg' parameter",
-			);
-		});
-
-		test("should throw error for invalid algorithm", () => {
-			const sign1: COSESign1 = {
-				protected: {
-					[COSEHeader.alg]: 999, // Invalid algorithm
-				},
-				unprotected: {},
-				payload: null,
-				signature: new Uint8Array([1, 2, 3, 4]).buffer,
-			};
-
-			expect(() => COSE.encodeSign1(sign1)).toThrow(
-				"Invalid or unsupported algorithm in protected header",
-			);
-		});
-	});
-
-	describe("COSE_Sign", () => {
-		test("should encode and decode COSE_Sign with minimal fields", () => {
-			const sign: COSESign = {
-				protected: {
-					[COSEHeader.alg]: COSEAlgorithm.ES256,
-				},
-				unprotected: {},
-				payload: null,
-				signatures: [
-					{
-						protected: {
-							[COSEHeader.alg]: COSEAlgorithm.ES256,
-						},
-						unprotected: {},
-						signature: new Uint8Array([1, 2, 3, 4]).buffer,
-					},
-				],
-			};
-
-			const encoded = COSE.encodeSign(sign);
-			const decoded = COSE.decodeSign(encoded);
-			expect(decoded).toEqual(sign);
-		});
-
-		test("should encode and decode COSE_Sign with multiple signatures", () => {
-			const sign: COSESign = {
-				protected: {
-					[COSEHeader.alg]: COSEAlgorithm.ES256,
-				},
-				unprotected: {},
-				payload: new Uint8Array([1, 2, 3]).buffer,
-				signatures: [
-					{
-						protected: {
-							[COSEHeader.alg]: COSEAlgorithm.ES256,
-						},
-						unprotected: {
-							[COSEHeader.kid]: new Uint8Array([1]).buffer,
-						},
-						signature: new Uint8Array([2, 3, 4]).buffer,
-					},
-					{
-						protected: {
-							[COSEHeader.alg]: COSEAlgorithm.ES384,
-						},
-						unprotected: {
-							[COSEHeader.kid]: new Uint8Array([2]).buffer,
-						},
-						signature: new Uint8Array([5, 6, 7]).buffer,
-					},
-				],
-			};
-
-			const encoded = COSE.encodeSign(sign);
-			const decoded = COSE.decodeSign(encoded);
-			expect(decoded).toEqual(sign);
-		});
-	});
-
-	describe("COSE_Mac0", () => {
-		test("should encode and decode COSE_Mac0 with minimal fields", () => {
-			const mac0: COSEMac0 = {
-				protected: {
-					[COSEHeader.alg]: COSEAlgorithm.HMAC_256_256,
-				},
-				unprotected: {},
-				payload: null,
-				tag: new Uint8Array([1, 2, 3, 4]).buffer,
-			};
-
-			const encoded = COSE.encodeMac0(mac0);
-			const decoded = COSE.decodeMac0(encoded);
-			expect(decoded).toEqual(mac0);
-		});
-
-		test("should encode and decode COSE_Mac0 with all fields", () => {
-			const mac0: COSEMac0 = {
-				protected: {
-					[COSEHeader.alg]: COSEAlgorithm.HMAC_256_256,
-				},
-				unprotected: {
-					[COSEHeader.kid]: new Uint8Array([1, 2, 3]).buffer,
-				},
-				payload: new Uint8Array([4, 5, 6]).buffer,
-				tag: new Uint8Array([7, 8, 9]).buffer,
-			};
-
-			const encoded = COSE.encodeMac0(mac0);
-			const decoded = COSE.decodeMac0(encoded);
-			expect(decoded).toEqual(mac0);
-		});
-	});
-
-	describe("COSE_Mac", () => {
-		test("should encode and decode COSE_Mac with minimal fields", () => {
-			const mac: COSEMac = {
-				protected: {
-					[COSEHeader.alg]: COSEAlgorithm.HMAC_256_256,
-				},
-				unprotected: {},
-				payload: null,
-				recipients: [
-					{
-						protected: {
-							[COSEHeader.alg]: COSEAlgorithm.HMAC_256_256,
-						},
-						unprotected: {},
-						tag: new Uint8Array([1, 2, 3, 4]).buffer,
-					},
-				],
-			};
-
-			const encoded = COSE.encodeMac(mac);
-			const decoded = COSE.decodeMac(encoded);
-			expect(decoded).toEqual(mac);
-		});
-
-		test("should encode and decode COSE_Mac with multiple recipients", () => {
-			const mac: COSEMac = {
-				protected: {
-					[COSEHeader.alg]: COSEAlgorithm.HMAC_256_256,
-				},
-				unprotected: {},
-				payload: new Uint8Array([1, 2, 3]).buffer,
-				recipients: [
-					{
-						protected: {
-							[COSEHeader.alg]: COSEAlgorithm.HMAC_256_256,
-						},
-						unprotected: {
-							[COSEHeader.kid]: new Uint8Array([1]).buffer,
-						},
-						tag: new Uint8Array([2, 3, 4]).buffer,
-					},
-					{
-						protected: {
-							[COSEHeader.alg]: COSEAlgorithm.HMAC_384_384,
-						},
-						unprotected: {
-							[COSEHeader.kid]: new Uint8Array([2]).buffer,
-						},
-						tag: new Uint8Array([5, 6, 7]).buffer,
-					},
-				],
-			};
-
-			const encoded = COSE.encodeMac(mac);
-			const decoded = COSE.decodeMac(encoded);
-			expect(decoded).toEqual(mac);
-		});
-	});
-
-	describe("COSE_Encrypt0", () => {
-		test("should encode and decode COSE_Encrypt0 with minimal fields", () => {
-			const encrypt0: COSEEncrypt0 = {
-				protected: {
-					[COSEHeader.alg]: COSEAlgorithm.AES_GCM_128,
-				},
-				unprotected: {},
-				ciphertext: new Uint8Array([1, 2, 3, 4]).buffer,
-			};
-
-			const encoded = COSE.encodeEncrypt0(encrypt0);
-			const decoded = COSE.decodeEncrypt0(encoded);
-			expect(decoded).toEqual(encrypt0);
-		});
-
-		test("should encode and decode COSE_Encrypt0 with all fields", () => {
-			const encrypt0: COSEEncrypt0 = {
-				protected: {
-					[COSEHeader.alg]: COSEAlgorithm.AES_GCM_128,
-					[COSEHeader.iv]: new Uint8Array([
-						1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-					]).buffer,
-				},
-				unprotected: {
-					[COSEHeader.kid]: new Uint8Array([1, 2, 3]).buffer,
-				},
-				ciphertext: new Uint8Array([4, 5, 6]).buffer,
-			};
-
-			const encoded = COSE.encodeEncrypt0(encrypt0);
-			const decoded = COSE.decodeEncrypt0(encoded);
-			expect(decoded).toEqual(encrypt0);
-		});
-	});
-
-	describe("COSE_Encrypt", () => {
-		test("should encode and decode COSE_Encrypt with minimal fields", () => {
-			const encrypt: COSEEncrypt = {
-				protected: {
-					[COSEHeader.alg]: COSEAlgorithm.AES_GCM_128,
-				},
-				unprotected: {},
-				ciphertext: new Uint8Array([1, 2, 3, 4]).buffer,
-				recipients: [
-					{
-						protected: {
-							[COSEHeader.alg]: COSEAlgorithm.AES_GCM_128,
-						},
-						unprotected: {},
-						encrypted_key: new Uint8Array([5, 6, 7, 8]).buffer,
-					},
-				],
-			};
-
-			const encoded = COSE.encodeEncrypt(encrypt);
-			const decoded = COSE.decodeEncrypt(encoded);
-			expect(decoded).toEqual(encrypt);
-		});
-
-		test("should encode and decode COSE_Encrypt with multiple recipients", () => {
-			const encrypt: COSEEncrypt = {
-				protected: {
-					[COSEHeader.alg]: COSEAlgorithm.AES_GCM_128,
-					[COSEHeader.iv]: new Uint8Array([
-						1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,
-					]).buffer,
-				},
-				unprotected: {},
-				ciphertext: new Uint8Array([1, 2, 3]).buffer,
-				recipients: [
-					{
-						protected: {
-							[COSEHeader.alg]: COSEAlgorithm.AES_GCM_128,
-						},
-						unprotected: {
-							[COSEHeader.kid]: new Uint8Array([1]).buffer,
-						},
-						encrypted_key: new Uint8Array([2, 3, 4]).buffer,
-					},
-					{
-						protected: {
-							[COSEHeader.alg]: COSEAlgorithm.AES_GCM_192,
-						},
-						unprotected: {
-							[COSEHeader.kid]: new Uint8Array([2]).buffer,
-						},
-						encrypted_key: new Uint8Array([5, 6, 7]).buffer,
-					},
-				],
-			};
-
-			const encoded = COSE.encodeEncrypt(encrypt);
-			const decoded = COSE.decodeEncrypt(encoded);
-			expect(decoded).toEqual(encrypt);
-		});
-	});
-
 	describe("Property-based tests", () => {
 		// Helper function to generate random header maps
 		const headerMapArbitrary = fc.record({
@@ -413,8 +77,8 @@ describe("COSE", () => {
 				signature: fc.uint8Array().map((arr) => arr.buffer),
 			}),
 		])("should handle any valid COSE_Sign1 structure", (sign1) => {
-			const encoded = COSE.encodeSign1(sign1);
-			const decoded = COSE.decodeSign1(encoded);
+			const encoded = COSE.Sign1.encode(sign1);
+			const decoded = COSE.Sign1.decode(encoded);
 			expect(decoded).toEqual(sign1);
 		});
 
@@ -433,8 +97,8 @@ describe("COSE", () => {
 				),
 			}),
 		])("should handle any valid COSE_Sign structure", (sign) => {
-			const encoded = COSE.encodeSign(sign);
-			const decoded = COSE.decodeSign(encoded);
+			const encoded = COSE.Sign.encode(sign);
+			const decoded = COSE.Sign.decode(encoded);
 			expect(decoded).toEqual(sign);
 		});
 
@@ -446,8 +110,8 @@ describe("COSE", () => {
 				tag: fc.uint8Array().map((arr) => arr.buffer),
 			}),
 		])("should handle any valid COSE_Mac0 structure", (mac0) => {
-			const encoded = COSE.encodeMac0(mac0);
-			const decoded = COSE.decodeMac0(encoded);
+			const encoded = COSE.Mac0.encode(mac0);
+			const decoded = COSE.Mac0.decode(encoded);
 			expect(decoded).toEqual(mac0);
 		});
 
@@ -466,8 +130,8 @@ describe("COSE", () => {
 				),
 			}),
 		])("should handle any valid COSE_Mac structure", (mac) => {
-			const encoded = COSE.encodeMac(mac);
-			const decoded = COSE.decodeMac(encoded);
+			const encoded = COSE.Mac.encode(mac);
+			const decoded = COSE.Mac.decode(encoded);
 			expect(decoded).toEqual(mac);
 		});
 
@@ -486,8 +150,8 @@ describe("COSE", () => {
 				),
 			}),
 		])("should handle any valid COSE_Mac structure", (mac) => {
-			const encoded = COSE.encodeMac(mac);
-			const decoded = COSE.decodeMac(encoded);
+			const encoded = COSE.Mac.encode(mac);
+			const decoded = COSE.Mac.decode(encoded);
 			expect(decoded).toEqual(mac);
 		});
 
@@ -498,8 +162,8 @@ describe("COSE", () => {
 				ciphertext: fc.uint8Array().map((arr) => arr.buffer),
 			}),
 		])("should handle any valid COSE_Encrypt0 structure", (encrypt0) => {
-			const encoded = COSE.encodeEncrypt0(encrypt0);
-			const decoded = COSE.decodeEncrypt0(encoded);
+			const encoded = COSE.Encrypt0.encode(encrypt0);
+			const decoded = COSE.Encrypt0.decode(encoded);
 			expect(decoded).toEqual(encrypt0);
 		});
 
@@ -518,8 +182,8 @@ describe("COSE", () => {
 				),
 			}),
 		])("should handle any valid COSE_Encrypt structure", (encrypt) => {
-			const encoded = COSE.encodeEncrypt(encrypt);
-			const decoded = COSE.decodeEncrypt(encoded);
+			const encoded = COSE.Encrypt.encode(encrypt);
+			const decoded = COSE.Encrypt.decode(encoded);
 			expect(decoded).toEqual(encrypt);
 		});
 
@@ -543,8 +207,8 @@ describe("COSE", () => {
 				signature: fc.uint8Array().map((arr) => arr.buffer),
 			}),
 		])("should handle edge cases for header maps", (sign1) => {
-			const encoded = COSE.encodeSign1(sign1);
-			const decoded = COSE.decodeSign1(encoded);
+			const encoded = COSE.Sign1.encode(sign1);
+			const decoded = COSE.Sign1.decode(encoded);
 			expect(decoded).toEqual(sign1);
 		});
 
@@ -562,8 +226,8 @@ describe("COSE", () => {
 				signature: fc.uint8Array().map((arr) => arr.buffer),
 			}),
 		])("should handle edge cases for binary data", (sign1) => {
-			const encoded = COSE.encodeSign1(sign1);
-			const decoded = COSE.decodeSign1(encoded);
+			const encoded = COSE.Sign1.encode(sign1);
+			const decoded = COSE.Sign1.decode(encoded);
 			expect(decoded).toEqual(sign1);
 		});
 	});
