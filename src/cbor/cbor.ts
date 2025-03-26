@@ -25,17 +25,9 @@ function encode(value: CBORValue): ArrayBuffer {
 	return concatBuffers(buffers);
 }
 
-function decode(buffer: ArrayBuffer, startOffset: number): [CBORValue, number];
-function decode(buffer: ArrayBuffer): CBORValue;
-function decode(
-	buffer: ArrayBuffer,
-	startOffset?: number,
-): CBORValue | [CBORValue, number] {
+function decode(buffer: ArrayBuffer, startOffset = 0): CBORValue {
 	if (buffer.byteLength > MAX_BUFFER_SIZE) {
 		throw new Error(`Buffer exceeds maximum size of ${MAX_BUFFER_SIZE} bytes`);
-	}
-	if (startOffset === undefined) {
-		return decodeValue(buffer, 0);
 	}
 	const [value] = decodeValue(buffer, startOffset);
 	return value;
