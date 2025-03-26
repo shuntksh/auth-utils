@@ -5,6 +5,9 @@
 	"version": "0.1.2",
 	"license": "MIT",
 	"workspaces": ["packages/*"],
+	"bin": {
+		"id": "./cli.mjs"
+	},
 	"exports": {
 		".": {
 			"types": "./dist/mod.d.ts",
