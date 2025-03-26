@@ -2,8 +2,8 @@
 import { describe, expect, setSystemTime } from "bun:test";
 import { fc, test } from "fast-check-bun-test";
 
-import { base32 } from "./base32";
-import { TOTP } from "./totp";
+import { base32 } from "../base32";
+import { TOTP } from "../totp";
 
 describe("TOTP Generation and Verification", () => {
 	// Test vector from RFC 6238

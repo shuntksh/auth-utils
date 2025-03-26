@@ -1,9 +1,9 @@
 import { describe, expect, test } from "bun:test";
 import fc from "fast-check";
 
-import { base64Url } from "./deps";
-import { JWE, type JWEHeader } from "./jwe";
-import type { StandardClaims } from "./jwt";
+import { base64Url } from "../deps";
+import { JWE, type JWEHeader } from "../jwe";
+import type { StandardClaims } from "../jwt";
 
 describe("JWE", () => {
 	// Basic functionality tests

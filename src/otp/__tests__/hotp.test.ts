@@ -1,8 +1,8 @@
 import { describe, expect } from "bun:test";
 import { fc, test } from "fast-check-bun-test";
 
-import { base32 } from "./base32";
-import { HOTP } from "./hotp";
+import { base32 } from "../base32";
+import { HOTP } from "../hotp";
 
 describe("HOTP Generation and Verification", () => {
 	// Test vectors from RFC 4226 Appendix D

@@ -2,7 +2,7 @@
 import { describe, expect } from "bun:test";
 import { fc, test } from "fast-check-bun-test";
 
-import { base32 } from "./base32";
+import { base32 } from "../base32";
 
 describe("Base32", () => {
 	test("should correctly encode and decode", () => {

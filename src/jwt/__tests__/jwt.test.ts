@@ -1,9 +1,9 @@
 import { describe, expect, test } from "bun:test";
 import fc from "fast-check";
 
-import { base64Url } from "./deps";
-import type { JWKKeySet, OctKey } from "./jwk";
-import { JWT } from "./jwt";
+import { base64Url } from "../deps";
+import type { JWKKeySet, OctKey } from "../jwk";
+import { JWT } from "../jwt";
 
 describe("JWT", () => {
 	const testKey = "test-secret-key-for-jwt-operations";

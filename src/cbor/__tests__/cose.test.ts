@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { fc } from "fast-check-bun-test";
 
+import { COSE, COSEAlgorithm, COSEHeader } from "../cose";
 import type {
 	COSEEncrypt,
 	COSEEncrypt0,
@@ -8,8 +9,7 @@ import type {
 	COSEMac0,
 	COSESign,
 	COSESign1,
-} from "./cose";
-import { COSE, COSEAlgorithm, COSEHeader } from "./cose";
+} from "../types";
 
 describe("COSE", () => {
 	describe("COSE_Sign1", () => {
