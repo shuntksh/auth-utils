@@ -49,7 +49,8 @@ export class Snowflake {
 		binary: string;
 	} {
 		const binary = Snowflake.toBinaryString(id);
-		const timestamp = Number.parseInt(binary.substring(1, 42), 2) + Snowflake.EPOCH; // Ignore most significant bit
+		const timestamp =
+			Number.parseInt(binary.substring(1, 42), 2) + Snowflake.EPOCH; // Ignore most significant bit
 		const workerId = Number.parseInt(binary.substring(42, 52), 2);
 		const sequence = Number.parseInt(binary.substring(52), 2);
 		return { timestamp, workerId, sequence, binary };
@@ -65,7 +66,9 @@ export class Snowflake {
 	 */
 	constructor(workerId: number, sequence = 0) {
 		if (workerId < 0 || workerId > Snowflake.MAX_WORKER_ID) {
-			throw new Error(`Worker ID must be between 0 and ${Snowflake.MAX_WORKER_ID}`);
+			throw new Error(
+				`Worker ID must be between 0 and ${Snowflake.MAX_WORKER_ID}`,
+			);
 		}
 		// Ensure machineId is within 10 bits
 		this.workerId = BigInt(workerId);
@@ -74,7 +77,9 @@ export class Snowflake {
 
 	setWorkerId(workerId: number): void {
 		if (workerId < 0 || workerId > Snowflake.MAX_WORKER_ID) {
-			throw new Error(`Worker ID must be between 0 and ${Snowflake.MAX_WORKER_ID}`);
+			throw new Error(
+				`Worker ID must be between 0 and ${Snowflake.MAX_WORKER_ID}`,
+			);
 		}
 		this.workerId = BigInt(workerId);
 	}
@@ -86,7 +91,8 @@ export class Snowflake {
 		// [01-41]: Timestamp (ms) - 41 bits
 		// [42-51]: Worker ID - 10 bits
 		// [52-63]: Sequence - 12 bits
-		const timestampPart = (timestamp - BigInt(Snowflake.EPOCH)) << Snowflake.TIMESTAMP_SHIFT;
+		const timestampPart =
+			(timestamp - BigInt(Snowflake.EPOCH)) << Snowflake.TIMESTAMP_SHIFT;
 		const workerPart = this.workerId << Snowflake.WORKER_ID_SHIFT;
 		return timestampPart | workerPart | sequence;
 	}
