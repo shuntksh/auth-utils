@@ -4,18 +4,96 @@
     "": {
       "name": "totp-hotp-ts",
       "devDependencies": {
-        "@biomejs/biome": "latest",
-        "@types/bun": "latest",
-        "fast-check": "latest",
-        "fast-check-bun-test": "latest",
-        "tsup": "latest",
+        "@biomejs/biome": "^1.9.4",
       },
       "peerDependencies": {
-        "typescript": "latest",
+        "typescript": "5.8.2",
+      },
+    },
+    "packages/cbor": {
+      "name": "@auth-utils/jwt",
+      "version": "0.1.2",
+      "devDependencies": {
+        "@biomejs/biome": "^1.9.4",
+        "@types/bun": "1.2.6",
+        "fast-check": "4.0.0",
+        "fast-check-bun-test": "0.1.1",
+        "tsup": "8.4.0",
+      },
+      "peerDependencies": {
+        "typescript": "5.8.2",
+      },
+    },
+    "packages/id": {
+      "name": "@auth-utils/id",
+      "version": "0.1.2",
+      "devDependencies": {
+        "@biomejs/biome": "^1.9.4",
+        "@types/bun": "1.2.6",
+        "fast-check": "4.0.0",
+        "fast-check-bun-test": "0.1.1",
+        "tsup": "8.4.0",
+      },
+      "peerDependencies": {
+        "typescript": "5.8.2",
+      },
+    },
+    "packages/jwt": {
+      "name": "@auth-utils/cbor",
+      "version": "0.1.2",
+      "devDependencies": {
+        "@auth-utils/shared": "workspace:*",
+        "@biomejs/biome": "^1.9.4",
+        "@types/bun": "1.2.6",
+        "fast-check": "4.0.0",
+        "fast-check-bun-test": "0.1.1",
+        "tsup": "8.4.0",
+      },
+      "peerDependencies": {
+        "typescript": "5.8.2",
+      },
+    },
+    "packages/otp": {
+      "name": "@auth-utils/otp",
+      "version": "0.1.2",
+      "devDependencies": {
+        "@auth-utils/shared": "workspace:*",
+        "@biomejs/biome": "^1.9.4",
+        "@types/bun": "1.2.6",
+        "fast-check": "4.0.0",
+        "fast-check-bun-test": "0.1.1",
+        "tsup": "8.4.0",
+      },
+      "peerDependencies": {
+        "typescript": "5.8.2",
+      },
+    },
+    "packages/shared": {
+      "name": "@auth-utils/shared",
+      "version": "0.1.2",
+      "devDependencies": {
+        "@biomejs/biome": "^1.9.4",
+        "@types/bun": "1.2.6",
+        "fast-check": "4.0.0",
+        "fast-check-bun-test": "0.1.1",
+        "tsup": "8.4.0",
+      },
+      "peerDependencies": {
+        "typescript": "5.8.2",
       },
     },
   },
   "packages": {
+    "@auth-utils/cbor": ["@auth-utils/cbor@workspace:packages/jwt"],
+
+    "@auth-utils/id": ["@auth-utils/id@workspace:packages/id"],
+
+    "@auth-utils/jwt": ["@auth-utils/jwt@workspace:packages/cbor"],
+
+    "@auth-utils/otp": ["@auth-utils/otp@workspace:packages/otp"],
+
+    "@auth-utils/shared": ["@auth-utils/shared@workspace:packages/shared"],
+
     "@biomejs/biome": ["@biomejs/biome@1.9.4", "", { "optionalDependencies": { "@biomejs/cli-darwin-arm64": "1.9.4", "@biomejs/cli-darwin-x64": "1.9.4", "@biomejs/cli-linux-arm64": "1.9.4", "@biomejs/cli-linux-arm64-musl": "1.9.4", "@biomejs/cli-linux-x64": "1.9.4", "@biomejs/cli-linux-x64-musl": "1.9.4", "@biomejs/cli-win32-arm64": "1.9.4", "@biomejs/cli-win32-x64": "1.9.4" }, "bin": { "biome": "bin/biome" } }, "sha512-1rkd7G70+o9KkTn5KLmDYXihGoTaIGO9PIIN2ZB7UJxFrWw04CZHPYiMRjYsaDvVV7hP1dYNRLxSANLaBFGpog=="],
 
     "@biomejs/cli-darwin-arm64": ["@biomejs/cli-darwin-arm64@1.9.4", "", { "os": "darwin", "cpu": "arm64" }, "sha512-bFBsPWrNvkdKrNCYeAp+xo2HecOGPAy9WyNyB/jKnnedgzl4W4Hb9ZMzYNbf8dMCGmUdSavlYHiR01QaYR58cw=="],

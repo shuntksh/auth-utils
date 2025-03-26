@@ -1,5 +1,5 @@
-import { constantTimeEqual } from "@/utils/equal";
 import { base32 } from "./base32";
+import { constantTimeEqual } from "./deps";
 
 export const HOTP = {
 	generate: generateHOTP,

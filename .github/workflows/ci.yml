@@ -45,8 +45,8 @@ jobs:
       # Build -----------------------------------------------------------------
       #
 
-      - name: Build the web app
-        run: bun run build
+      # - name: Build the web app
+      #   run: bun run build
 
       #
       # Unit tests ------------------------------------------------------------

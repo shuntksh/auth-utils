@@ -1,4 +1,4 @@
-import { base64Url } from "@/utils/encoding";
+import { base64Url } from "packages/shared/src/encoding";
 import { Encrypt } from "./cose-encrypt";
 import { Encrypt0 } from "./cose-encrypt0";
 import { Key } from "./cose-key";

@@ -1,5 +1,5 @@
 {
-	"name": "auth-utils",
+	"name": "@auth-utils/shared",
 	"module": "dist/mod.js",
 	"type": "module",
 	"version": "0.1.2",
@@ -7,6 +7,11 @@
 	"workspaces": [
 		"packages/*"
 	],
+	"private": true,
+	"exports": {
+		"./encoding": "./src/encoding.ts",
+		"./equal": "./src/equal.ts"
+	},
 	"scripts": {
 		"build": "tsup",
 		"test": "bun test",
@@ -16,7 +21,11 @@
 		"lint:ci": "biome ci src"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^1.9.4"
+		"@biomejs/biome": "^1.9.4",
+		"@types/bun": "1.2.6",
+		"fast-check": "4.0.0",
+		"fast-check-bun-test": "0.1.1",
+		"tsup": "8.4.0"
 	},
 	"peerDependencies": {
 		"typescript": "5.8.2"
