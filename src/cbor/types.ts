@@ -1,3 +1,26 @@
+export const CBOR_MAJOR_TYPES = {
+	UNSIGNED_INTEGER: 0, // 0..2^64-1 inclusive
+	NEGATIVE_INTEGER: 1,
+	BYTE_STRING: 2,
+	TEXT_STRING: 3,
+	ARRAY: 4,
+	MAP: 5,
+	TAG: 6,
+	FLOAT: 7,
+} as const;
+
+export const CBOR_FLOAT_ADDITIONAL_INFO = {
+	FALSE: 20,
+	TRUE: 21,
+	NULL: 22,
+	UNDEFINED: 23,
+	SIMPLE_VALUE: 24,
+	HALF_PRECISION: 25,
+	SINGLE_PRECISION: 26,
+	DOUBLE_PRECISION: 27,
+	BREAK: 31,
+} as const;
+
 export type CBORValue =
 	| number
 	| ArrayBuffer

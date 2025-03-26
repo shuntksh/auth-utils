@@ -1,4 +1,4 @@
-import { decodeFirstItem } from "./cbor-decode";
+import { decodeValue } from "./cbor-decode";
 import { encodeValue } from "./cbor-encode";
 import type { CBORValue } from "./types";
 
@@ -8,7 +8,6 @@ import type { CBORValue } from "./types";
 export const CBOR = {
 	encode,
 	decode,
-	decodeWithOffset,
 	decodeMapToMap,
 } as const;
 
@@ -26,31 +25,20 @@ function encode(value: CBORValue): ArrayBuffer {
 	return concatBuffers(buffers);
 }
 
-function decode(buffer: ArrayBuffer): CBORValue {
-	if (buffer.byteLength > MAX_BUFFER_SIZE) {
-		throw new Error(`Buffer exceeds maximum size of ${MAX_BUFFER_SIZE} bytes`);
-	}
-	const [value] = decodeFirstItem(buffer, 0);
-	return value;
-}
-
-/**
- * Decodes a CBOR buffer and returns the value along with the number of bytes consumed.
- * Useful for parsing concatenated CBOR data (e.g., COSE key followed by extensions in WebAuthn).
- *
- * @param buffer - The buffer to decode.
- * @param startOffset - The offset to start decoding from.
- * @returns The decoded value and the number of bytes consumed.
- */
-function decodeWithOffset(
+function decode(buffer: ArrayBuffer, startOffset: number): [CBORValue, number];
+function decode(buffer: ArrayBuffer): CBORValue;
+function decode(
 	buffer: ArrayBuffer,
-	startOffset = 0,
-): [CBORValue, number] {
+	startOffset?: number,
+): CBORValue | [CBORValue, number] {
 	if (buffer.byteLength > MAX_BUFFER_SIZE) {
 		throw new Error(`Buffer exceeds maximum size of ${MAX_BUFFER_SIZE} bytes`);
 	}
-	const [value, newOffset] = decodeFirstItem(buffer, startOffset);
-	return [value, newOffset - startOffset];
+	if (startOffset === undefined) {
+		return decodeValue(buffer, 0);
+	}
+	const [value] = decodeValue(buffer, startOffset);
+	return value;
 }
 
 /**
@@ -70,7 +58,7 @@ function decodeMapToMap<K extends string | number, V extends CBORValue>(
 	valueValidator: (value: CBORValue) => value is V = (value): value is V =>
 		true,
 ): [Map<K, V>, number] {
-	const [obj, newOffset] = decodeFirstItem(buffer, startOffset);
+	const [obj, newOffset] = decodeValue(buffer, startOffset);
 	if (
 		typeof obj !== "object" ||
 		obj === null ||

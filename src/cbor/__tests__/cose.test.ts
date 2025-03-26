@@ -1,5 +1,5 @@
-import { describe, expect, test } from "bun:test";
-import { fc } from "fast-check-bun-test";
+import { describe, expect } from "bun:test";
+import { fc, test } from "fast-check-bun-test";
 
 import { COSE, COSEAlgorithm, COSEHeader } from "../cose";
 import type {
@@ -348,7 +348,7 @@ describe("COSE", () => {
 				fc.constant(COSEAlgorithm.ES256),
 				fc.constant(COSEAlgorithm.ES384),
 				fc.constant(COSEAlgorithm.ES512),
-				fc.constant(COSEAlgorithm.EdDSA),
+				fc.constant(COSEAlgorithm.EDDSA),
 				fc.constant(COSEAlgorithm.RS256),
 				fc.constant(COSEAlgorithm.RS384),
 				fc.constant(COSEAlgorithm.RS512),
@@ -361,7 +361,7 @@ describe("COSE", () => {
 				fc.constant(COSEAlgorithm.AES_GCM_128),
 				fc.constant(COSEAlgorithm.AES_GCM_192),
 				fc.constant(COSEAlgorithm.AES_GCM_256),
-				fc.constant(COSEAlgorithm.ChaCha20_Poly1305),
+				fc.constant(COSEAlgorithm.CHACHA20_POLY1305),
 				fc.constant(COSEAlgorithm.direct),
 			),
 			[COSEHeader.crit]: fc.oneof(
@@ -405,186 +405,166 @@ describe("COSE", () => {
 			fc.constant(null),
 		);
 
-		test("should handle any valid COSE_Sign1 structure", () => {
-			fc.assert(
-				fc.property(
+		test.prop([
+			fc.record({
+				protected: headerMapArbitrary,
+				unprotected: headerMapArbitrary,
+				payload: binaryDataArbitrary,
+				signature: fc.uint8Array().map((arr) => arr.buffer),
+			}),
+		])("should handle any valid COSE_Sign1 structure", (sign1) => {
+			const encoded = COSE.encodeSign1(sign1);
+			const decoded = COSE.decodeSign1(encoded);
+			expect(decoded).toEqual(sign1);
+		});
+
+		test.prop([
+			fc.record({
+				protected: headerMapArbitrary,
+				unprotected: headerMapArbitrary,
+				payload: binaryDataArbitrary,
+				signatures: fc.array(
 					fc.record({
 						protected: headerMapArbitrary,
 						unprotected: headerMapArbitrary,
-						payload: binaryDataArbitrary,
 						signature: fc.uint8Array().map((arr) => arr.buffer),
 					}),
-					(sign1) => {
-						const encoded = COSE.encodeSign1(sign1);
-						const decoded = COSE.decodeSign1(encoded);
-						expect(decoded).toEqual(sign1);
-					},
+					{ minLength: 1, maxLength: 5 },
 				),
-			);
+			}),
+		])("should handle any valid COSE_Sign structure", (sign) => {
+			const encoded = COSE.encodeSign(sign);
+			const decoded = COSE.decodeSign(encoded);
+			expect(decoded).toEqual(sign);
 		});
 
-		test("should handle any valid COSE_Sign structure", () => {
-			fc.assert(
-				fc.property(
+		test.prop([
+			fc.record({
+				protected: headerMapArbitrary,
+				unprotected: headerMapArbitrary,
+				payload: binaryDataArbitrary,
+				tag: fc.uint8Array().map((arr) => arr.buffer),
+			}),
+		])("should handle any valid COSE_Mac0 structure", (mac0) => {
+			const encoded = COSE.encodeMac0(mac0);
+			const decoded = COSE.decodeMac0(encoded);
+			expect(decoded).toEqual(mac0);
+		});
+
+		test.prop([
+			fc.record({
+				protected: headerMapArbitrary,
+				unprotected: headerMapArbitrary,
+				payload: binaryDataArbitrary,
+				recipients: fc.array(
 					fc.record({
 						protected: headerMapArbitrary,
 						unprotected: headerMapArbitrary,
-						payload: binaryDataArbitrary,
-						signatures: fc.array(
-							fc.record({
-								protected: headerMapArbitrary,
-								unprotected: headerMapArbitrary,
-								signature: fc.uint8Array().map((arr) => arr.buffer),
-							}),
-							{ minLength: 1, maxLength: 5 },
-						),
-					}),
-					(sign) => {
-						const encoded = COSE.encodeSign(sign);
-						const decoded = COSE.decodeSign(encoded);
-						expect(decoded).toEqual(sign);
-					},
-				),
-			);
-		});
-
-		test("should handle any valid COSE_Mac0 structure", () => {
-			fc.assert(
-				fc.property(
-					fc.record({
-						protected: headerMapArbitrary,
-						unprotected: headerMapArbitrary,
-						payload: binaryDataArbitrary,
 						tag: fc.uint8Array().map((arr) => arr.buffer),
 					}),
-					(mac0) => {
-						const encoded = COSE.encodeMac0(mac0);
-						const decoded = COSE.decodeMac0(encoded);
-						expect(decoded).toEqual(mac0);
-					},
+					{ minLength: 1, maxLength: 5 },
 				),
-			);
+			}),
+		])("should handle any valid COSE_Mac structure", (mac) => {
+			const encoded = COSE.encodeMac(mac);
+			const decoded = COSE.decodeMac(encoded);
+			expect(decoded).toEqual(mac);
 		});
 
-		test("should handle any valid COSE_Mac structure", () => {
-			fc.assert(
-				fc.property(
+		test.prop([
+			fc.record({
+				protected: headerMapArbitrary,
+				unprotected: headerMapArbitrary,
+				payload: binaryDataArbitrary,
+				recipients: fc.array(
 					fc.record({
 						protected: headerMapArbitrary,
 						unprotected: headerMapArbitrary,
-						payload: binaryDataArbitrary,
-						recipients: fc.array(
-							fc.record({
-								protected: headerMapArbitrary,
-								unprotected: headerMapArbitrary,
-								tag: fc.uint8Array().map((arr) => arr.buffer),
-							}),
-							{ minLength: 1, maxLength: 5 },
-						),
+						tag: fc.uint8Array().map((arr) => arr.buffer),
 					}),
-					(mac) => {
-						const encoded = COSE.encodeMac(mac);
-						const decoded = COSE.decodeMac(encoded);
-						expect(decoded).toEqual(mac);
-					},
+					{ minLength: 1, maxLength: 5 },
 				),
-			);
+			}),
+		])("should handle any valid COSE_Mac structure", (mac) => {
+			const encoded = COSE.encodeMac(mac);
+			const decoded = COSE.decodeMac(encoded);
+			expect(decoded).toEqual(mac);
 		});
 
-		test("should handle any valid COSE_Encrypt0 structure", () => {
-			fc.assert(
-				fc.property(
+		test.prop([
+			fc.record({
+				protected: headerMapArbitrary,
+				unprotected: headerMapArbitrary,
+				ciphertext: fc.uint8Array().map((arr) => arr.buffer),
+			}),
+		])("should handle any valid COSE_Encrypt0 structure", (encrypt0) => {
+			const encoded = COSE.encodeEncrypt0(encrypt0);
+			const decoded = COSE.decodeEncrypt0(encoded);
+			expect(decoded).toEqual(encrypt0);
+		});
+
+		test.prop([
+			fc.record({
+				protected: headerMapArbitrary,
+				unprotected: headerMapArbitrary,
+				ciphertext: fc.uint8Array().map((arr) => arr.buffer),
+				recipients: fc.array(
 					fc.record({
 						protected: headerMapArbitrary,
 						unprotected: headerMapArbitrary,
-						ciphertext: fc.uint8Array().map((arr) => arr.buffer),
+						encrypted_key: fc.uint8Array().map((arr) => arr.buffer),
 					}),
-					(encrypt0) => {
-						const encoded = COSE.encodeEncrypt0(encrypt0);
-						const decoded = COSE.decodeEncrypt0(encoded);
-						expect(decoded).toEqual(encrypt0);
-					},
+					{ minLength: 1, maxLength: 5 },
 				),
-			);
+			}),
+		])("should handle any valid COSE_Encrypt structure", (encrypt) => {
+			const encoded = COSE.encodeEncrypt(encrypt);
+			const decoded = COSE.decodeEncrypt(encoded);
+			expect(decoded).toEqual(encrypt);
 		});
 
-		test("should handle any valid COSE_Encrypt structure", () => {
-			fc.assert(
-				fc.property(
-					fc.record({
-						protected: headerMapArbitrary,
-						unprotected: headerMapArbitrary,
-						ciphertext: fc.uint8Array().map((arr) => arr.buffer),
-						recipients: fc.array(
-							fc.record({
-								protected: headerMapArbitrary,
-								unprotected: headerMapArbitrary,
-								encrypted_key: fc.uint8Array().map((arr) => arr.buffer),
-							}),
-							{ minLength: 1, maxLength: 5 },
-						),
-					}),
-					(encrypt) => {
-						const encoded = COSE.encodeEncrypt(encrypt);
-						const decoded = COSE.decodeEncrypt(encoded);
-						expect(decoded).toEqual(encrypt);
-					},
-				),
-			);
+		test.prop([
+			fc.record({
+				protected: fc.record({
+					[COSEHeader.alg]: fc.constant(COSEAlgorithm.ES256),
+					[COSEHeader.crit]: fc.array(fc.integer()),
+					[COSEHeader.ctyp]: fc.string(),
+					[COSEHeader.kid]: fc.uint8Array().map((arr) => arr.buffer),
+					[COSEHeader.iv]: fc.uint8Array().map((arr) => arr.buffer),
+				}),
+				unprotected: fc.record({
+					[COSEHeader.alg]: fc.integer(),
+					[COSEHeader.crit]: fc.array(fc.integer()),
+					[COSEHeader.ctyp]: fc.string(),
+					[COSEHeader.kid]: fc.uint8Array().map((arr) => arr.buffer),
+					[COSEHeader.iv]: fc.uint8Array().map((arr) => arr.buffer),
+				}),
+				payload: binaryDataArbitrary,
+				signature: fc.uint8Array().map((arr) => arr.buffer),
+			}),
+		])("should handle edge cases for header maps", (sign1) => {
+			const encoded = COSE.encodeSign1(sign1);
+			const decoded = COSE.decodeSign1(encoded);
+			expect(decoded).toEqual(sign1);
 		});
 
-		test("should handle edge cases for header maps", () => {
-			fc.assert(
-				fc.property(
-					fc.record({
-						protected: fc.record({
-							[COSEHeader.alg]: fc.constant(COSEAlgorithm.ES256),
-							[COSEHeader.crit]: fc.array(fc.integer()),
-							[COSEHeader.ctyp]: fc.string(),
-							[COSEHeader.kid]: fc.uint8Array().map((arr) => arr.buffer),
-							[COSEHeader.iv]: fc.uint8Array().map((arr) => arr.buffer),
-						}),
-						unprotected: fc.record({
-							[COSEHeader.alg]: fc.integer(),
-							[COSEHeader.crit]: fc.array(fc.integer()),
-							[COSEHeader.ctyp]: fc.string(),
-							[COSEHeader.kid]: fc.uint8Array().map((arr) => arr.buffer),
-							[COSEHeader.iv]: fc.uint8Array().map((arr) => arr.buffer),
-						}),
-						payload: binaryDataArbitrary,
-						signature: fc.uint8Array().map((arr) => arr.buffer),
-					}),
-					(sign1) => {
-						const encoded = COSE.encodeSign1(sign1);
-						const decoded = COSE.decodeSign1(encoded);
-						expect(decoded).toEqual(sign1);
-					},
+		test.prop([
+			fc.record({
+				protected: headerMapArbitrary,
+				unprotected: headerMapArbitrary,
+				payload: fc.oneof(
+					fc.constant(null),
+					fc.constant(new Uint8Array().buffer),
+					fc.constant(new Uint8Array([0]).buffer),
+					fc.constant(new Uint8Array([255]).buffer),
+					fc.constant(new Uint8Array(1000).fill(255).buffer),
 				),
-			);
-		});
-
-		test("should handle edge cases for binary data", () => {
-			fc.assert(
-				fc.property(
-					fc.record({
-						protected: headerMapArbitrary,
-						unprotected: headerMapArbitrary,
-						payload: fc.oneof(
-							fc.constant(null),
-							fc.constant(new Uint8Array().buffer),
-							fc.constant(new Uint8Array([0]).buffer),
-							fc.constant(new Uint8Array([255]).buffer),
-							fc.constant(new Uint8Array(1000).fill(255).buffer),
-						),
-						signature: fc.uint8Array().map((arr) => arr.buffer),
-					}),
-					(sign1) => {
-						const encoded = COSE.encodeSign1(sign1);
-						const decoded = COSE.decodeSign1(encoded);
-						expect(decoded).toEqual(sign1);
-					},
-				),
-			);
+				signature: fc.uint8Array().map((arr) => arr.buffer),
+			}),
+		])("should handle edge cases for binary data", (sign1) => {
+			const encoded = COSE.encodeSign1(sign1);
+			const decoded = COSE.decodeSign1(encoded);
+			expect(decoded).toEqual(sign1);
 		});
 	});
 });
