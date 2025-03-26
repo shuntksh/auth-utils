@@ -1,52 +1,53 @@
-import { CBOR } from "./cbor";
-import { ensureArrayBuffer, validateProtectedHeader } from "./cose-utils";
-import type { CBORValue, HeaderMap } from "./types";
+import { CBOR } from "../cbor";
+import type { CBORValue, HeaderMap } from "../types";
+import { ensureArrayBuffer, validateProtectedHeader } from "./utils";
 
-export interface COSEMac {
+export interface COSEEncrypt {
 	protected: HeaderMap;
 	unprotected: HeaderMap;
-	payload: ArrayBuffer | null;
+	ciphertext: ArrayBuffer;
 	recipients: Array<{
 		protected: HeaderMap;
 		unprotected: HeaderMap;
-		tag: ArrayBuffer;
+		encrypted_key: ArrayBuffer;
 	}>;
 }
 
-export const COSE_MAC_TAG = 97;
+export const COSE_ENCRYPT_TAG = 96;
 
-export const Mac = {
-	tag: COSE_MAC_TAG,
-	encode(mac: COSEMac): ArrayBuffer {
-		validateProtectedHeader(mac.protected);
-		const protectedHeader = CBOR.encode(mac.protected);
+export const Encrypt = {
+	tag: COSE_ENCRYPT_TAG,
+
+	encode(encrypt: COSEEncrypt): ArrayBuffer {
+		validateProtectedHeader(encrypt.protected);
+		const protectedHeader = CBOR.encode(encrypt.protected);
 		const value = [
 			new Uint8Array(protectedHeader).buffer,
-			mac.unprotected,
-			mac.payload,
-			mac.recipients.map((rec) => {
+			encrypt.unprotected,
+			encrypt.ciphertext,
+			encrypt.recipients.map((rec) => {
 				validateProtectedHeader(rec.protected);
 				return [
 					new Uint8Array(CBOR.encode(rec.protected)).buffer,
 					rec.unprotected,
-					rec.tag,
+					rec.encrypted_key,
 				];
 			}),
 		];
-		return CBOR.encode({ tag: COSE_MAC_TAG, value });
+		return CBOR.encode({ tag: COSE_ENCRYPT_TAG, value });
 	},
 
-	decode(data: ArrayBuffer): COSEMac {
+	decode(data: ArrayBuffer): COSEEncrypt {
 		const tagged = CBOR.decode(data) as { tag: number; value: CBORValue };
-		if (tagged.tag !== COSE_MAC_TAG) {
+		if (tagged.tag !== COSE_ENCRYPT_TAG) {
 			throw new Error(
-				`Expected COSE_Mac tag ${COSE_MAC_TAG}, got ${tagged.tag}`,
+				`Expected COSE_Encrypt tag ${COSE_ENCRYPT_TAG}, got ${tagged.tag}`,
 			);
 		}
 		const decoded = tagged.value as [
 			ArrayBuffer,
 			HeaderMap,
-			ArrayBuffer | null,
+			ArrayBuffer,
 			Array<[ArrayBuffer, HeaderMap, ArrayBuffer]>,
 		];
 		const protectedHeader = CBOR.decode(decoded[0]) as HeaderMap;
@@ -54,14 +55,14 @@ export const Mac = {
 		return {
 			protected: protectedHeader,
 			unprotected: decoded[1],
-			payload: decoded[2],
+			ciphertext: ensureArrayBuffer(decoded[2]),
 			recipients: decoded[3].map((rec) => {
 				const recProtected = CBOR.decode(rec[0]) as HeaderMap;
 				validateProtectedHeader(recProtected);
 				return {
 					protected: recProtected,
 					unprotected: rec[1],
-					tag: ensureArrayBuffer(rec[2]),
+					encrypted_key: ensureArrayBuffer(rec[2]),
 				};
 			}),
 		};

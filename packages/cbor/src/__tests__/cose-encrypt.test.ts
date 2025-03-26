@@ -1,7 +1,7 @@
 import { describe, expect } from "bun:test";
 import { test } from "fast-check-bun-test";
 
-import { Encrypt } from "../cose-encrypt";
+import { Encrypt } from "../cose/encrypt";
 import type { COSEEncrypt } from "../types";
 import { COSEAlgorithm, COSEHeader } from "../types";
 

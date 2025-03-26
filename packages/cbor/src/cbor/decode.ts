@@ -1,5 +1,5 @@
-import type { CBORValue } from "./types";
-import { CBOR_FLOAT_ADDITIONAL_INFO, CBOR_MAJOR_TYPES } from "./types";
+import type { CBORValue } from "../types";
+import { CBOR_FLOAT_ADDITIONAL_INFO, CBOR_MAJOR_TYPES } from "../types";
 
 /**
  * Decodes the first item in the buffer

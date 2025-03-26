@@ -1,9 +1,9 @@
-export type { COSEEncrypt } from "./cose-encrypt";
-export type { COSEEncrypt0 } from "./cose-encrypt0";
-export type { COSEMac } from "./cose-mac";
-export type { COSEMac0 } from "./cose-mac0";
-export type { COSESign } from "./cose-sign";
-export type { COSESign1 } from "./cose-sign1";
+export type { COSEEncrypt } from "./cose/encrypt";
+export type { COSEEncrypt0 } from "./cose/encrypt0";
+export type { COSEMac } from "./cose/mac";
+export type { COSEMac0 } from "./cose/mac0";
+export type { COSESign } from "./cose/sign";
+export type { COSESign1 } from "./cose/sign1";
 
 export const CBOR_MAJOR_TYPES = {
 	UNSIGNED_INTEGER: 0, // 0..2^64-1 inclusive

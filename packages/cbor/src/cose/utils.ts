@@ -1,5 +1,5 @@
-import type { CBORValue, HeaderMap } from "./types";
-import { COSEAlgorithm, COSEHeader } from "./types";
+import type { CBORValue, HeaderMap } from "../types";
+import { COSEAlgorithm, COSEHeader } from "../types";
 
 export function validateProtectedHeader(header: HeaderMap): void {
 	if (!(COSEHeader.alg in header)) {

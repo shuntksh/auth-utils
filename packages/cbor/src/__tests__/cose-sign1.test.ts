@@ -1,6 +1,6 @@
 import { describe, expect } from "bun:test";
 import { test } from "fast-check-bun-test";
-import { Sign1 } from "../cose-sign1";
+import { Sign1 } from "../cose/sign1";
 import type { COSESign1 } from "../types";
 import { COSEAlgorithm, COSEHeader } from "../types";
 

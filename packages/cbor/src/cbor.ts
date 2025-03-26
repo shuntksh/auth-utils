@@ -1,5 +1,5 @@
-import { decodeValue } from "./cbor-decode";
-import { encodeValue } from "./cbor-encode";
+import { decodeValue } from "./cbor/decode";
+import { encodeValue } from "./cbor/encode";
 import type { CBORValue } from "./types";
 
 /**

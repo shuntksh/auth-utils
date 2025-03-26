@@ -1,7 +1,7 @@
-import { CBOR } from "./cbor";
-import { decodeValue } from "./cbor-decode";
-import type { CBORValue } from "./types";
-import { COSEAlgorithm } from "./types";
+import { CBOR } from "../cbor";
+import { decodeValue } from "../cbor/decode";
+import type { CBORValue } from "../types";
+import { COSEAlgorithm } from "../types";
 
 // COSE_Key Structure (RFC 8152 §7)
 export interface COSEKey {

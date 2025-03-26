@@ -1,6 +1,6 @@
-import { CBOR } from "./cbor";
-import { ensureArrayBuffer, validateProtectedHeader } from "./cose-utils";
-import type { CBORValue, HeaderMap } from "./types";
+import { CBOR } from "../cbor";
+import type { CBORValue, HeaderMap } from "../types";
+import { ensureArrayBuffer, validateProtectedHeader } from "./utils";
 
 export interface COSESign {
 	protected: HeaderMap;
