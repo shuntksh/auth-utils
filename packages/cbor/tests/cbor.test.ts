@@ -1,7 +1,7 @@
 import { describe, expect } from "bun:test";
 import { fc, test } from "fast-check-bun-test";
 
-import { CBOR } from "../cbor";
+import { CBOR } from "../src/cbor";
 
 describe("CBOR", () => {
 	describe("encode/decode", () => {

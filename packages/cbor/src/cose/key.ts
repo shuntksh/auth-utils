@@ -4,12 +4,13 @@ import type { CBORValue } from "../types";
 import { COSEAlgorithm } from "../types";
 
 // COSE_Key Structure (RFC 8152 §7)
-export interface COSEKey {
+export interface COSE_Key {
 	1: number; // kty (e.g., 2 = EC2, 3 = RSA)
 	3: number; // alg (COSEAlgorithm)
 	[-1]?: number | ArrayBuffer; // crv (EC) or n (RSA modulus)
 	[-2]?: ArrayBuffer; // x (EC) or e (RSA exponent)
 	[-3]?: ArrayBuffer; // y (EC)
+	[-4]?: ArrayBuffer; // d (EC private key)
 }
 
 export const Key = {
@@ -18,7 +19,7 @@ export const Key = {
 	 * @param key - The COSE_Key to encode.
 	 * @returns The CBOR-encoded key as an ArrayBuffer.
 	 */
-	encode(key: COSEKey): ArrayBuffer {
+	encode(key: COSE_Key): ArrayBuffer {
 		const keyMap = new Map<number, number | ArrayBuffer>(
 			Object.entries(key).map(([k, v]) => [Number(k), v]),
 		);

@@ -1,9 +1,10 @@
-export type { COSEEncrypt } from "./cose/encrypt";
-export type { COSEEncrypt0 } from "./cose/encrypt0";
-export type { COSEMac } from "./cose/mac";
-export type { COSEMac0 } from "./cose/mac0";
-export type { COSESign } from "./cose/sign";
-export type { COSESign1 } from "./cose/sign1";
+export type { COSE_Encrypt } from "./cose/encrypt";
+export type { COSE_Encrypt0 } from "./cose/encrypt0";
+export type { COSE_Mac } from "./cose/mac";
+export type { COSE_Mac0 } from "./cose/mac0";
+export type { COSE_Sign } from "./cose/sign";
+export type { COSE_Sign1 } from "./cose/sign1";
+export type { COSE_Key } from "./cose/key";
 
 export const CBOR_MAJOR_TYPES = {
 	UNSIGNED_INTEGER: 0, // 0..2^64-1 inclusive
@@ -84,3 +85,26 @@ export enum COSEAlgorithm {
 }
 
 export type HeaderMap = Record<number, CBORValue>;
+
+// Standard CWT claim keys as per RFC 8392, Section 4
+export const CWTClaimKeys = {
+	iss: 1, // Issuer
+	sub: 2, // Subject
+	aud: 3, // Audience
+	exp: 4, // Expiration Time
+	nbf: 5, // Not Before
+	iat: 6, // Issued At
+	cti: 7, // CWT ID
+} as const;
+
+// Type definition for CWT claims, mirroring JWT claims but adapted for CBOR
+export interface CWTClaims {
+	iss?: string; // StringOrURI
+	sub?: string; // StringOrURI
+	aud?: string | string[]; // StringOrURI or array of StringOrURI
+	exp?: number; // NumericDate (integer or float)
+	nbf?: number; // NumericDate (integer or float)
+	iat?: number; // NumericDate (integer or float)
+	cti?: ArrayBuffer; // Byte string
+	[key: string]: CBORValue | undefined; // Custom claims
+}

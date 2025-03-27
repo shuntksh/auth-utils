@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { CBOR } from "../cbor";
-import type { CBORValue } from "../types";
+import { CBOR } from "../src/cbor";
+import type { CBORValue } from "../src/types";
 
 describe("CBOR RFC Examples", () => {
 	// Helper function to convert hex string to ArrayBuffer

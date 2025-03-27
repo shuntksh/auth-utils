@@ -1,13 +1,13 @@
 import { describe, expect } from "bun:test";
 import { test } from "fast-check-bun-test";
 
-import { Mac0 } from "../cose/mac0";
-import type { COSEMac0 } from "../types";
-import { COSEAlgorithm, COSEHeader } from "../types";
+import { Mac0 } from "../src/cose/mac0";
+import type { COSE_Mac0 } from "../src/types";
+import { COSEAlgorithm, COSEHeader } from "../src/types";
 
 describe("COSE_Mac0", () => {
 	test("should encode and decode COSE_Mac0 with minimal fields", () => {
-		const mac0: COSEMac0 = {
+		const mac0: COSE_Mac0 = {
 			protected: {
 				[COSEHeader.alg]: COSEAlgorithm.HMAC_256_256,
 			},
@@ -22,7 +22,7 @@ describe("COSE_Mac0", () => {
 	});
 
 	test("should encode and decode COSE_Mac0 with all fields", () => {
-		const mac0: COSEMac0 = {
+		const mac0: COSE_Mac0 = {
 			protected: {
 				[COSEHeader.alg]: COSEAlgorithm.HMAC_256_256,
 			},

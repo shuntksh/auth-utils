@@ -2,7 +2,8 @@ import { CBOR } from "../cbor";
 import type { CBORValue, HeaderMap } from "../types";
 import { ensureArrayBuffer, validateProtectedHeader } from "./utils";
 
-export interface COSEEncrypt0 {
+/** COSE Single Recipient Encrypted Data Object */
+export interface COSE_Encrypt0 {
 	protected: HeaderMap;
 	unprotected: HeaderMap;
 	ciphertext: ArrayBuffer;
@@ -13,7 +14,7 @@ export const COSE_ENCRYPT0_TAG = 16;
 export const Encrypt0 = {
 	tag: COSE_ENCRYPT0_TAG,
 
-	encode(encrypt0: COSEEncrypt0): ArrayBuffer {
+	encode(encrypt0: COSE_Encrypt0): ArrayBuffer {
 		validateProtectedHeader(encrypt0.protected);
 		const protectedHeader = CBOR.encode(encrypt0.protected);
 		const value = [
@@ -24,7 +25,7 @@ export const Encrypt0 = {
 		return CBOR.encode({ tag: COSE_ENCRYPT0_TAG, value });
 	},
 
-	decode(data: ArrayBuffer): COSEEncrypt0 {
+	decode(data: ArrayBuffer): COSE_Encrypt0 {
 		const tagged = CBOR.decode(data) as { tag: number; value: CBORValue };
 		if (tagged.tag !== COSE_ENCRYPT0_TAG) {
 			throw new Error(

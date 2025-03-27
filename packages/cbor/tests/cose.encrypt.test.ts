@@ -1,13 +1,13 @@
 import { describe, expect } from "bun:test";
 import { test } from "fast-check-bun-test";
 
-import { Encrypt } from "../cose/encrypt";
-import type { COSEEncrypt } from "../types";
-import { COSEAlgorithm, COSEHeader } from "../types";
+import { Encrypt } from "../src/cose/encrypt";
+import type { COSE_Encrypt } from "../src/types";
+import { COSEAlgorithm, COSEHeader } from "../src/types";
 
 describe("COSE_Encrypt", () => {
 	test("should encode and decode COSE_Encrypt with minimal fields", () => {
-		const encrypt: COSEEncrypt = {
+		const encrypt: COSE_Encrypt = {
 			protected: {
 				[COSEHeader.alg]: COSEAlgorithm.AES_GCM_128,
 			},
@@ -30,7 +30,7 @@ describe("COSE_Encrypt", () => {
 	});
 
 	test("should encode and decode COSE_Encrypt with multiple recipients", () => {
-		const encrypt: COSEEncrypt = {
+		const encrypt: COSE_Encrypt = {
 			protected: {
 				[COSEHeader.alg]: COSEAlgorithm.AES_GCM_128,
 				[COSEHeader.iv]: new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])

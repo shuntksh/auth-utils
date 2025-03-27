@@ -1,13 +1,13 @@
 import { describe, expect } from "bun:test";
 import { test } from "fast-check-bun-test";
 
-import { Sign } from "../cose/sign";
-import type { COSESign } from "../types";
-import { COSEAlgorithm, COSEHeader } from "../types";
+import { Sign } from "../src/cose/sign";
+import type { COSE_Sign } from "../src/types";
+import { COSEAlgorithm, COSEHeader } from "../src/types";
 
 describe("COSE_Sign", () => {
 	test("should encode and decode COSE_Sign with minimal fields", () => {
-		const sign: COSESign = {
+		const sign: COSE_Sign = {
 			protected: {
 				[COSEHeader.alg]: COSEAlgorithm.ES256,
 			},
@@ -30,7 +30,7 @@ describe("COSE_Sign", () => {
 	});
 
 	test("should encode and decode COSE_Sign with multiple signatures", () => {
-		const sign: COSESign = {
+		const sign: COSE_Sign = {
 			protected: {
 				[COSEHeader.alg]: COSEAlgorithm.ES256,
 			},

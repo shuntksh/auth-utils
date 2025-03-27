@@ -2,7 +2,8 @@ import { CBOR } from "../cbor";
 import type { CBORValue, HeaderMap } from "../types";
 import { ensureArrayBuffer, validateProtectedHeader } from "./utils";
 
-export interface COSEMac0 {
+/** COSE Mac w/o Recipients Data Object */
+export interface COSE_Mac0 {
 	protected: HeaderMap;
 	unprotected: HeaderMap;
 	payload: ArrayBuffer | null;
@@ -14,7 +15,7 @@ export const COSE_MAC0_TAG = 17;
 export const Mac0 = {
 	tag: COSE_MAC0_TAG,
 
-	encode(mac0: COSEMac0): ArrayBuffer {
+	encode(mac0: COSE_Mac0): ArrayBuffer {
 		validateProtectedHeader(mac0.protected);
 		const protectedHeader = CBOR.encode(mac0.protected);
 		const value = [
@@ -26,7 +27,7 @@ export const Mac0 = {
 		return CBOR.encode({ tag: COSE_MAC0_TAG, value });
 	},
 
-	decode(data: ArrayBuffer): COSEMac0 {
+	decode(data: ArrayBuffer): COSE_Mac0 {
 		const tagged = CBOR.decode(data) as { tag: number; value: CBORValue };
 		if (tagged.tag !== COSE_MAC0_TAG) {
 			throw new Error(

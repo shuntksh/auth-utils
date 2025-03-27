@@ -1,8 +1,8 @@
 import { describe, expect } from "bun:test";
 import { fc, test } from "fast-check-bun-test";
 
-import { COSE } from "../cose";
-import { COSEAlgorithm, COSEHeader } from "../types";
+import { COSE } from "../src/cose";
+import { COSEAlgorithm, COSEHeader } from "../src/types";
 
 describe("COSE", () => {
 	describe("Property-based tests", () => {

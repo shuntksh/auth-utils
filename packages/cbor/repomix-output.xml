@@ -1,0 +1,585 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+The content has been processed where content has been compressed (code blocks are separated by ⋮---- delimiter).
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Content has been compressed - code blocks are separated by ⋮---- delimiter
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+<additional_info>
+
+</additional_info>
+
+</file_summary>
+
+<directory_structure>
+cbor/
+  decode.ts
+  encode.ts
+cose/
+  cose-sign.ts
+  cose-sign1.ts
+  encrypt.ts
+  encrypt0.ts
+  key.ts
+  mac.ts
+  mac0.ts
+  utils.ts
+cbor.ts
+cose.ts
+mod.ts
+types.ts
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="cbor/decode.ts">
+import type { CBORValue } from "../types";
+import { CBOR_FLOAT_ADDITIONAL_INFO, CBOR_MAJOR_TYPES } from "../types";
+⋮----
+/**
+ * Decodes the first item in the buffer
+ */
+export function decodeValue(
+	buffer: ArrayBuffer,
+	startOffset: number,
+): [CBORValue, number]
+⋮----
+/**
+ * Major type 0: Unsigned integers
+ */
+function decodeUnsignedInteger(
+	dataView: DataView,
+	offset: number,
+	additionalInfo: number,
+): [number, number]
+⋮----
+/**
+ * Major type 1: Negative integers
+ */
+function decodeNegativeInteger(
+	dataView: DataView,
+	offset: number,
+	additionalInfo: number,
+): [number, number]
+⋮----
+/**
+ * Major type 2: Byte strings
+ */
+function decodeByteString(
+	buffer: ArrayBuffer,
+	dataView: DataView,
+	offset: number,
+	additionalInfo: number,
+): [ArrayBuffer, number]
+⋮----
+/**
+ * Major type 3: Text strings
+ */
+function decodeTextString(
+	buffer: ArrayBuffer,
+	dataView: DataView,
+	offset: number,
+	additionalInfo: number,
+): [string, number]
+⋮----
+/**
+ * Major type 4: Arrays
+ */
+function decodeArray(
+	buffer: ArrayBuffer,
+	dataView: DataView,
+	offset: number,
+	additionalInfo: number,
+): [CBORValue[], number]
+⋮----
+/**
+ * Major type 5: Maps
+ */
+function decodeMap(
+	buffer: ArrayBuffer,
+	dataView: DataView,
+	offset: number,
+	additionalInfo: number,
+): [
+⋮----
+/**
+ * Major type 6: Tags
+ */
+function decodeTag(
+	buffer: ArrayBuffer,
+	dataView: DataView,
+	offset: number,
+	additionalInfo: number,
+): [
+⋮----
+/**
+ * Major type 7: Floating-point numbers and simple values
+ */
+function decodeSpecial(
+	dataView: DataView,
+	offset: number,
+	additionalInfo: number,
+): [CBORValue, number]
+⋮----
+/**
+ * Helper function for half-precision decoding
+ */
+function decodeHalfPrecision(bytes: Uint8Array): number
+⋮----
+/**
+ * Reads the length of the CBOR value
+ */
+function getLength(
+	dataView: DataView,
+	offset: number,
+	additionalInfo: number,
+): [number, number]
+⋮----
+/**
+ * Ensures that the buffer has enough bytes
+ */
+function ensureBytes(dataView: DataView, offset: number, length: number): void
+</file>
+
+<file path="cbor/encode.ts">
+import type { CBORValue } from "../types";
+import { CBOR_FLOAT_ADDITIONAL_INFO, CBOR_MAJOR_TYPES } from "../types";
+⋮----
+/**
+ * Encodes a CBOR value into a list of Uint8Arrays.
+ */
+export function encodeValue(value: CBORValue, buffers: Uint8Array[]): void
+⋮----
+/**
+ * Major type 0: Unsigned integers
+ */
+function encodeUnsignedInteger(value: number, buffers: Uint8Array[]): void
+⋮----
+/**
+ * Major type 1: Negative integers
+ */
+function encodeNegativeInteger(value: number, buffers: Uint8Array[]): void
+⋮----
+/**
+ * Major type 2: Byte strings
+ */
+function encodeByteString(value: ArrayBuffer, buffers: Uint8Array[]): void
+⋮----
+/**
+ * Major type 3: Text strings
+ */
+function encodeTextString(value: string, buffers: Uint8Array[]): void
+⋮----
+/**
+ * Major type 4: Arrays
+ */
+function encodeArray(value: CBORValue[], buffers: Uint8Array[]): void
+⋮----
+/**
+ * Major type 5: Maps
+ */
+function encodeMap(
+	value: { [key: string | number]: CBORValue },
+	buffers: Uint8Array[],
+): void
+⋮----
+// Check for duplicate keys
+⋮----
+/**
+ * Major type 6: Tags
+ */
+function encodeTag(tag: number, value: CBORValue, buffers: Uint8Array[]): void
+⋮----
+/**
+ * Major type 7: Floating-point numbers
+ */
+function encodeFloat(value: number, buffers: Uint8Array[]): void
+⋮----
+// Special case for 0 and -0
+⋮----
+buffer[1] = Object.is(value, -0) ? 0x80 : 0x00; // -0.0: sign bit 1, exp 0, mantissa 0
+buffer[2] = 0x00; // mantissa 0
+⋮----
+// Try half-precision (16-bit)
+⋮----
+// Convert to half-precision
+⋮----
+// Extract sign bit
+⋮----
+// Extract exponent
+⋮----
+// Extract mantissa
+⋮----
+// Convert to half-precision format
+⋮----
+// Overflow to infinity
+⋮----
+// Underflow to zero
+⋮----
+// Normal number
+⋮----
+// Try single-precision (32-bit)
+⋮----
+// Default to double-precision (64-bit)
+⋮----
+/**
+ * Helper function for half-precision decoding (for encoding validation)
+ */
+function decodeHalfPrecision(bytes: Uint8Array): number
+⋮----
+/**
+ * Major type 7: Boolean values
+ */
+function encodeBoolean(value: boolean, buffers: Uint8Array[]): void
+⋮----
+/**
+ * Major type 7: Null value
+ */
+function encodeNull(buffers: Uint8Array[]): void
+⋮----
+/**
+ * Major type 7: Undefined value
+ */
+function encodeUndefined(buffers: Uint8Array[]): void
+⋮----
+function getSpecialType(additionalInfo: number): number
+⋮----
+/**
+ * Encodes the length of a CBOR value.
+ */
+function encodeLength(majorType: number, length: number): Uint8Array
+</file>
+
+<file path="cose/cose-sign.ts">
+import { CBOR } from "../cbor";
+import type { CBORValue, HeaderMap } from "../types";
+import { ensureArrayBuffer, validateProtectedHeader } from "./utils";
+⋮----
+/** COSE Signed Data Object */
+export interface COSE_Sign {
+	protected: HeaderMap;
+	unprotected: HeaderMap;
+	payload: ArrayBuffer | null;
+	signatures: Array<{
+		protected: HeaderMap;
+		unprotected: HeaderMap;
+		signature: ArrayBuffer;
+	}>;
+}
+⋮----
+encode(sign: COSE_Sign): ArrayBuffer
+⋮----
+decode(data: ArrayBuffer): COSE_Sign
+</file>
+
+<file path="cose/cose-sign1.ts">
+import { CBOR } from "../cbor";
+import type { CBORValue, HeaderMap } from "../types";
+import { ensureArrayBuffer, validateProtectedHeader } from "./utils";
+⋮----
+/** COSE Single Signer Data Object */
+export interface COSE_Sign1 {
+	protected: HeaderMap;
+	unprotected: HeaderMap;
+	payload: ArrayBuffer | null;
+	signature: ArrayBuffer;
+}
+⋮----
+encode(sign1: COSE_Sign1): ArrayBuffer
+⋮----
+decode(data: ArrayBuffer): COSE_Sign1
+</file>
+
+<file path="cose/encrypt.ts">
+import { CBOR } from "../cbor";
+import type { CBORValue, HeaderMap } from "../types";
+import { ensureArrayBuffer, validateProtectedHeader } from "./utils";
+⋮----
+/** COSE Encrypted Data Object */
+export interface COSE_Encrypt {
+	protected: HeaderMap;
+	unprotected: HeaderMap;
+	ciphertext: ArrayBuffer;
+	recipients: Array<{
+		protected: HeaderMap;
+		unprotected: HeaderMap;
+		encrypted_key: ArrayBuffer;
+	}>;
+}
+⋮----
+encode(encrypt: COSE_Encrypt): ArrayBuffer
+⋮----
+decode(data: ArrayBuffer): COSE_Encrypt
+</file>
+
+<file path="cose/encrypt0.ts">
+import { CBOR } from "../cbor";
+import type { CBORValue, HeaderMap } from "../types";
+import { ensureArrayBuffer, validateProtectedHeader } from "./utils";
+⋮----
+/** COSE Single Recipient Encrypted Data Object */
+export interface COSE_Encrypt0 {
+	protected: HeaderMap;
+	unprotected: HeaderMap;
+	ciphertext: ArrayBuffer;
+}
+⋮----
+encode(encrypt0: COSE_Encrypt0): ArrayBuffer
+⋮----
+decode(data: ArrayBuffer): COSE_Encrypt0
+</file>
+
+<file path="cose/key.ts">
+import { CBOR } from "../cbor";
+import { decodeValue } from "../cbor/decode";
+import type { CBORValue } from "../types";
+import { COSEAlgorithm } from "../types";
+⋮----
+// COSE_Key Structure (RFC 8152 §7)
+export interface COSEKey {
+	1: number; // kty (e.g., 2 = EC2, 3 = RSA)
+	3: number; // alg (COSEAlgorithm)
+	[-1]?: number | ArrayBuffer; // crv (EC) or n (RSA modulus)
+	[-2]?: ArrayBuffer; // x (EC) or e (RSA exponent)
+	[-3]?: ArrayBuffer; // y (EC)
+}
+⋮----
+1: number; // kty (e.g., 2 = EC2, 3 = RSA)
+3: number; // alg (COSEAlgorithm)
+[-1]?: number | ArrayBuffer; // crv (EC) or n (RSA modulus)
+[-2]?: ArrayBuffer; // x (EC) or e (RSA exponent)
+[-3]?: ArrayBuffer; // y (EC)
+⋮----
+/**
+	 * Encodes a COSE_Key structure (untagged).
+	 * @param key - The COSE_Key to encode.
+	 * @returns The CBOR-encoded key as an ArrayBuffer.
+	 */
+encode(key: COSEKey): ArrayBuffer
+⋮----
+/**
+	 * Decodes a COSE_Key structure (untagged).
+	 * @param data - The CBOR-encoded key data.
+	 * @returns The decoded COSE_Key as a Map.
+	 */
+decode(data: ArrayBuffer): Map<number, number | ArrayBuffer>
+⋮----
+/**
+ * Validates a COSE_Key structure (RFC 8152 §7).
+ */
+function validateCOSEKey(key: Map<number, number | ArrayBuffer>): void
+⋮----
+// EC2
+⋮----
+// RSA
+⋮----
+/**
+ * Decodes a CBOR map directly into a JavaScript Map with specified key/value types.
+ * Tailored for WebAuthn COSE keys (numeric keys, number/ArrayBuffer values).
+ *
+ * @param buffer - The buffer to decode.
+ * @param startOffset - The offset to start decoding from.
+ * @param keyValidator - The validator for the keys.
+ * @param valueValidator - The validator for the values.
+ * @returns The decoded map.
+ */
+export function decodeMapToMap<K extends string | number, V extends CBORValue>(
+	buffer: ArrayBuffer,
+	startOffset = 0,
+	keyValidator: (key: string | number) => key is K = (key): key is K => true,
+valueValidator: (value: CBORValue)
+</file>
+
+<file path="cose/mac.ts">
+import { CBOR } from "../cbor";
+import type { CBORValue, HeaderMap } from "../types";
+import { ensureArrayBuffer, validateProtectedHeader } from "./utils";
+⋮----
+/** COSE MACed Data Object */
+export interface COSE_Mac {
+	protected: HeaderMap;
+	unprotected: HeaderMap;
+	payload: ArrayBuffer | null;
+	recipients: Array<{
+		protected: HeaderMap;
+		unprotected: HeaderMap;
+		tag: ArrayBuffer;
+	}>;
+}
+⋮----
+encode(mac: COSE_Mac): ArrayBuffer
+⋮----
+decode(data: ArrayBuffer): COSE_Mac
+</file>
+
+<file path="cose/mac0.ts">
+import { CBOR } from "../cbor";
+import type { CBORValue, HeaderMap } from "../types";
+import { ensureArrayBuffer, validateProtectedHeader } from "./utils";
+⋮----
+/** COSE Mac w/o Recipients Data Object */
+export interface COSE_Mac0 {
+	protected: HeaderMap;
+	unprotected: HeaderMap;
+	payload: ArrayBuffer | null;
+	tag: ArrayBuffer;
+}
+⋮----
+encode(mac0: COSE_Mac0): ArrayBuffer
+⋮----
+decode(data: ArrayBuffer): COSE_Mac0
+</file>
+
+<file path="cose/utils.ts">
+import type { CBORValue, HeaderMap } from "../types";
+import { COSEAlgorithm, COSEHeader } from "../types";
+⋮----
+export function validateProtectedHeader(header: HeaderMap): void
+⋮----
+export function ensureArrayBuffer(value: CBORValue): ArrayBuffer
+</file>
+
+<file path="cbor.ts">
+import { decodeValue } from "./cbor/decode";
+import { encodeValue } from "./cbor/encode";
+import type { CBORValue } from "./types";
+⋮----
+/**
+ * RFC 8949: Concise Binary Object Representation (CBOR)
+ */
+⋮----
+function encode(value: CBORValue): ArrayBuffer
+⋮----
+function decode(buffer: ArrayBuffer, startOffset = 0): CBORValue
+⋮----
+/**
+ * Concatenates an array of ArrayBuffers into a single ArrayBuffer
+ * @param buffers - Array of ArrayBuffers to concatenate
+ * @returns Concatenated ArrayBuffer
+ */
+function concatBuffers(buffers: ArrayBuffer[] | Uint8Array[]): ArrayBuffer
+</file>
+
+<file path="cose.ts">
+import { base64Url } from "@auth-utils/shared/encoding";
+import { Sign } from "./cose/cose-sign";
+import { Sign1 } from "./cose/cose-sign1";
+import { Encrypt } from "./cose/encrypt";
+import { Encrypt0 } from "./cose/encrypt0";
+import { Key } from "./cose/key";
+import { Mac } from "./cose/mac";
+import { Mac0 } from "./cose/mac0";
+⋮----
+/**
+ * RFC 8152: CBOR Object Signing and Encryption (COSE)
+ */
+⋮----
+export async function importPublicKey(
+	coseKey: Map<number, number | ArrayBuffer>,
+): Promise<CryptoKey>
+⋮----
+// EC2
+⋮----
+// RSA
+</file>
+
+<file path="mod.ts">
+
+</file>
+
+<file path="types.ts">
+UNSIGNED_INTEGER: 0, // 0..2^64-1 inclusive
+⋮----
+export type CBORValue =
+	| number
+	| ArrayBuffer
+	| string
+	| CBORValue[]
+	| { [key: string | number]: CBORValue }
+	| { tag: number; value: CBORValue }
+	| boolean
+	| null
+	| undefined;
+⋮----
+export enum COSEHeader {
+	alg = 1,
+	crit = 2,
+	ctyp = 3,
+	kid = 4,
+	iv = 5,
+	partial_iv = 6,
+	counter_signature = 7,
+	salt = 8,
+	counter_signature0 = 9,
+	x5chain = 33,
+	x5t = 34,
+}
+⋮----
+export enum COSEAlgorithm {
+	AES_CCM_16_128_128 = 30,
+	AES_CCM_16_128_256 = 31,
+	AES_CCM_16_64_128 = 10,
+	AES_CCM_16_64_256 = 12,
+	AES_CCM_64_128_128 = 32,
+	AES_CCM_64_128_256 = 33,
+	AES_CCM_64_64_128 = 13,
+	AES_CCM_64_64_256 = 14,
+	AES_GCM_128 = 1,
+	AES_GCM_192 = 2,
+	AES_GCM_256 = 3,
+	CHACHA20_POLY1305 = 24,
+	direct = -6,
+	EDDSA = -8,
+	ES256 = -7,
+	ES384 = -35,
+	ES512 = -36,
+	HMAC_256_256 = 5,
+	HMAC_256_64 = 4,
+	HMAC_384_384 = 6,
+	HMAC_512_512 = 7,
+	PS256 = -37,
+	PS384 = -38,
+	PS512 = -39,
+	RS256 = -257,
+	RS384 = -258,
+	RS512 = -259,
+}
+⋮----
+export type HeaderMap = Record<number, CBORValue>;
+</file>
+
+</files>

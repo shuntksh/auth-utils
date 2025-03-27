@@ -2,7 +2,8 @@ import { CBOR } from "../cbor";
 import type { CBORValue, HeaderMap } from "../types";
 import { ensureArrayBuffer, validateProtectedHeader } from "./utils";
 
-export interface COSESign1 {
+/** COSE Single Signer Data Object */
+export interface COSE_Sign1 {
 	protected: HeaderMap;
 	unprotected: HeaderMap;
 	payload: ArrayBuffer | null;
@@ -14,7 +15,7 @@ export const COSE_SIGN1_TAG = 16;
 export const Sign1 = {
 	tag: COSE_SIGN1_TAG,
 
-	encode(sign1: COSESign1): ArrayBuffer {
+	encode(sign1: COSE_Sign1): ArrayBuffer {
 		validateProtectedHeader(sign1.protected);
 		const protectedHeader = CBOR.encode(sign1.protected);
 		const value = [
@@ -26,7 +27,7 @@ export const Sign1 = {
 		return CBOR.encode({ tag: COSE_SIGN1_TAG, value });
 	},
 
-	decode(data: ArrayBuffer): COSESign1 {
+	decode(data: ArrayBuffer): COSE_Sign1 {
 		const tagged = CBOR.decode(data) as { tag: number; value: CBORValue };
 		if (tagged.tag !== COSE_SIGN1_TAG) {
 			throw new Error(

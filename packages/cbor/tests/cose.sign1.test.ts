@@ -1,12 +1,12 @@
 import { describe, expect } from "bun:test";
 import { test } from "fast-check-bun-test";
-import { Sign1 } from "../cose/sign1";
-import type { COSESign1 } from "../types";
-import { COSEAlgorithm, COSEHeader } from "../types";
+import { Sign1 } from "../src/cose/sign1";
+import type { COSE_Sign1 } from "../src/types";
+import { COSEAlgorithm, COSEHeader } from "../src/types";
 
 describe("COSE_Sign1", () => {
 	test("should encode and decode COSE_Sign1 with minimal fields", () => {
-		const sign1: COSESign1 = {
+		const sign1: COSE_Sign1 = {
 			protected: {
 				[COSEHeader.alg]: COSEAlgorithm.ES256,
 			},
@@ -21,7 +21,7 @@ describe("COSE_Sign1", () => {
 	});
 
 	test("should encode and decode COSE_Sign1 with all fields", () => {
-		const sign1: COSESign1 = {
+		const sign1: COSE_Sign1 = {
 			protected: {
 				[COSEHeader.alg]: COSEAlgorithm.ES256,
 				[COSEHeader.crit]: [COSEHeader.alg],
@@ -40,7 +40,7 @@ describe("COSE_Sign1", () => {
 	});
 
 	test("should handle COSE_Sign1 with various payload types", () => {
-		const sign1: COSESign1 = {
+		const sign1: COSE_Sign1 = {
 			protected: {
 				[COSEHeader.alg]: COSEAlgorithm.ES256,
 			},
@@ -55,7 +55,7 @@ describe("COSE_Sign1", () => {
 	});
 
 	test("should throw error for missing algorithm", () => {
-		const sign1: COSESign1 = {
+		const sign1: COSE_Sign1 = {
 			protected: {},
 			unprotected: {},
 			payload: null,
@@ -68,7 +68,7 @@ describe("COSE_Sign1", () => {
 	});
 
 	test("should throw error for invalid algorithm", () => {
-		const sign1: COSESign1 = {
+		const sign1: COSE_Sign1 = {
 			protected: {
 				[COSEHeader.alg]: 999, // Invalid algorithm
 			},

@@ -1,4 +1,4 @@
-import { base64Url } from "packages/shared/src/encoding";
+import { base64Url } from "@auth-utils/shared/encoding";
 import { Encrypt } from "./cose/encrypt";
 import { Encrypt0 } from "./cose/encrypt0";
 import { Key } from "./cose/key";
@@ -6,6 +6,8 @@ import { Mac } from "./cose/mac";
 import { Mac0 } from "./cose/mac0";
 import { Sign } from "./cose/sign";
 import { Sign1 } from "./cose/sign1";
+
+
 
 /**
  * RFC 8152: CBOR Object Signing and Encryption (COSE)
