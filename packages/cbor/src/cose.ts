@@ -7,8 +7,6 @@ import { Mac0 } from "./cose/mac0";
 import { Sign } from "./cose/sign";
 import { Sign1 } from "./cose/sign1";
 
-
-
 /**
  * RFC 8152: CBOR Object Signing and Encryption (COSE)
  */
