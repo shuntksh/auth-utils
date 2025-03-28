@@ -58,7 +58,6 @@
       "version": "0.1.2",
       "dependencies": {
         "@auth-utils/jwt": "workspace:*",
-        "@auth-utils/shared": "workspace:*",
       },
       "devDependencies": {
         "@biomejs/biome": "^1.9.4",
@@ -76,6 +75,23 @@
       "version": "0.1.2",
       "devDependencies": {
         "@auth-utils/shared": "workspace:*",
+        "@biomejs/biome": "^1.9.4",
+        "@types/bun": "1.2.6",
+        "fast-check": "4.0.0",
+        "fast-check-bun-test": "0.1.1",
+        "tsup": "8.4.0",
+      },
+      "peerDependencies": {
+        "typescript": "5.8.2",
+      },
+    },
+    "packages/requests": {
+      "name": "@auth-utils/requests",
+      "version": "0.1.2",
+      "dependencies": {
+        "@auth-utils/jwt": "workspace:*",
+      },
+      "devDependencies": {
         "@biomejs/biome": "^1.9.4",
         "@types/bun": "1.2.6",
         "fast-check": "4.0.0",
@@ -153,6 +169,8 @@
     "@auth-utils/oidc": ["@auth-utils/oidc@workspace:packages/oidc"],
 
     "@auth-utils/otp": ["@auth-utils/otp@workspace:packages/otp"],
+
+    "@auth-utils/requests": ["@auth-utils/requests@workspace:packages/requests"],
 
     "@auth-utils/shared": ["@auth-utils/shared@workspace:packages/shared"],
 

@@ -2,7 +2,7 @@
 import { describe, expect } from "bun:test";
 import { fc, test } from "fast-check-bun-test";
 
-import { base32, base64Url } from "../encoding";
+import { base32, base64Url } from "@auth-utils/shared/encoding";
 
 describe("Base64URL Encoding/Decoding", () => {
 	test("should correctly encode and decode strings", () => {
