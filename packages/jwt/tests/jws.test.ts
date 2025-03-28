@@ -1,9 +1,9 @@
 import { describe, expect, test } from "bun:test";
 import fc from "fast-check";
 
-import { base64Url } from "../deps";
-import { JWS, type JWSHeader } from "../jws";
-import type { StandardClaims } from "../jwt";
+import { JWS, type JWSHeader } from "@auth-utils/jwt/jws";
+import type { StandardClaims } from "@auth-utils/jwt/jwt";
+import { base64Url } from "@auth-utils/shared/encoding";
 
 describe("JWS", () => {
 	// Basic functionality tests
@@ -219,7 +219,7 @@ describe("JWS", () => {
 		// we'll check the implementation to ensure it's using constantTimeEqual
 
 		// Read the implementation code
-		const jwsImplementation = await import("../jws");
+		const jwsImplementation = await import("../src/jws");
 		const verifyJWSCode = jwsImplementation.verifyJWS.toString();
 
 		// Check if the code contains a call to constantTimeEqual

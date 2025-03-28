@@ -6,7 +6,8 @@ import {
 	it,
 	setSystemTime,
 } from "bun:test";
-import { Snowflake } from "../snowflake";
+
+import { Snowflake } from "@auth-utils/id/snowflake";
 
 describe("snowflake id", () => {
 	beforeEach(() => {

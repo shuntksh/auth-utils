@@ -1,0 +1,38 @@
+{
+  "name": "@auth-utils/oidc",
+  "module": "dist/mod.js",
+  "type": "module",
+  "version": "0.1.2",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/mod.d.ts",
+      "import": "./dist/mod.js",
+      "require": "./dist/mod.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "bun test",
+    "test:watch": "bun test --watch",
+    "format": "biome check --write --unsafe src",
+    "lint": "biome check src",
+    "lint:ci": "biome ci src"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@types/bun": "1.2.6",
+    "fast-check": "4.0.0",
+    "fast-check-bun-test": "0.1.1",
+    "tsup": "8.4.0"
+  },
+  "dependencies": {
+    "@auth-utils/jwt": "workspace:*"
+  },
+  "peerDependencies": {
+    "typescript": "5.8.2"
+  }
+}

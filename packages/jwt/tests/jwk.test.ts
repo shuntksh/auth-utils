@@ -2,9 +2,9 @@
 
 import { describe, expect, it, mock } from "bun:test";
 
-import { base64Url } from "../deps";
-import type { ECKey, JWKKeySet, OctKey, RSAKey } from "../jwk";
-import { JWK } from "../jwk";
+import type { ECKey, JWKKeySet, OctKey, RSAKey } from "@auth-utils/jwt/jwk";
+import { JWK } from "@auth-utils/jwt/jwk";
+import { base64Url } from "@auth-utils/shared/encoding";
 
 describe("JWK", () => {
 	describe("parse", () => {

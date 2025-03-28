@@ -11,7 +11,7 @@
       },
     },
     "packages/cbor": {
-      "name": "@auth-utils/jwt",
+      "name": "@auth-utils/cbor",
       "version": "0.1.2",
       "devDependencies": {
         "@biomejs/biome": "^1.9.4",
@@ -39,10 +39,28 @@
       },
     },
     "packages/jwt": {
-      "name": "@auth-utils/cbor",
+      "name": "@auth-utils/jwt",
       "version": "0.1.2",
       "devDependencies": {
         "@auth-utils/shared": "workspace:*",
+        "@biomejs/biome": "^1.9.4",
+        "@types/bun": "1.2.6",
+        "fast-check": "4.0.0",
+        "fast-check-bun-test": "0.1.1",
+        "tsup": "8.4.0",
+      },
+      "peerDependencies": {
+        "typescript": "5.8.2",
+      },
+    },
+    "packages/oidc": {
+      "name": "@auth-utils/oidc",
+      "version": "0.1.2",
+      "dependencies": {
+        "@auth-utils/jwt": "workspace:*",
+        "@auth-utils/shared": "workspace:*",
+      },
+      "devDependencies": {
         "@biomejs/biome": "^1.9.4",
         "@types/bun": "1.2.6",
         "fast-check": "4.0.0",
@@ -126,11 +144,13 @@
 
     "@astrojs/telemetry": ["@astrojs/telemetry@3.2.0", "", { "dependencies": { "ci-info": "^4.1.0", "debug": "^4.3.7", "dlv": "^1.1.3", "dset": "^3.1.4", "is-docker": "^3.0.0", "is-wsl": "^3.1.0", "which-pm-runs": "^1.1.0" } }, "sha512-wxhSKRfKugLwLlr4OFfcqovk+LIFtKwLyGPqMsv+9/ibqqnW3Gv7tBhtKEb0gAyUAC4G9BTVQeQahqnQAhd6IQ=="],
 
-    "@auth-utils/cbor": ["@auth-utils/cbor@workspace:packages/jwt"],
+    "@auth-utils/cbor": ["@auth-utils/cbor@workspace:packages/cbor"],
 
     "@auth-utils/id": ["@auth-utils/id@workspace:packages/id"],
 
-    "@auth-utils/jwt": ["@auth-utils/jwt@workspace:packages/cbor"],
+    "@auth-utils/jwt": ["@auth-utils/jwt@workspace:packages/jwt"],
+
+    "@auth-utils/oidc": ["@auth-utils/oidc@workspace:packages/oidc"],
 
     "@auth-utils/otp": ["@auth-utils/otp@workspace:packages/otp"],
 

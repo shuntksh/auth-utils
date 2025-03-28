@@ -1,5 +1,6 @@
 import { describe, expect, it, setSystemTime } from "bun:test";
-import { UUIDv7 } from "../uuid7";
+
+import { UUIDv7 } from "@auth-utils/id/uuid7";
 
 function computeEntropy(value: bigint): number {
 	const bit: ("0" | "1")[] = value

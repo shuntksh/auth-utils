@@ -1,10 +1,12 @@
 {
-	"name": "@auth-utils/cbor",
+	"name": "@auth-utils/jwt",
 	"module": "dist/mod.js",
 	"type": "module",
 	"version": "0.1.2",
 	"license": "MIT",
-	"workspaces": ["packages/*"],
+	"workspaces": [
+		"packages/*"
+	],
 	"exports": {
 		".": {
 			"types": "./dist/mod.d.ts",
