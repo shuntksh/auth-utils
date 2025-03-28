@@ -1,16 +1,6 @@
 # Auth Utilities
 
-A TypeScript implementation of various auth related utilities.
-
-## Javascript Object Signing and Encryption (JOSE)
-
-### JSON Web Token (JWT, RFC 7519)
-
-### JSON Web Encryption (JWE, RFC7516)
-
-### JSON Web Signature (JWS, RFC7515)
-
-### JSON Web Key (JWK, RFC7517)
+A TypeScript implementation of various auth related utilities. This repository is highly experimental and still work in progress. It is not meant be used in production systems.
 
 ## One Time Password
 
